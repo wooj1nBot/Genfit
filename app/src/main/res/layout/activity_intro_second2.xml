@@ -1,9 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".IntroSecond_Activity2">
+    android:orientation="vertical"
+    tools:context=".introFirst_Activity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/intro_sec_skip_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="top"
+        android:lineSpacingExtra="-3sp"
+        android:text="건너뛰기"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/intro_sec_textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_sec_skip_textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"
+        android:fontFamily="@font/pd_regu"
+        android:text="체형을 분석하여\n알맞는 스타일링"
+        android:textSize="27dp" />
+
+    <TextView
+        android:id="@+id/intro_sec_textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_sec_textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="center"
+        android:text="어떤 옷을 입을 지\n 고민을 줄여드릴게요"
+        android:textSize="18dp" />
+
+    <View
+        android:id="@+id/intro_sec_gif"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_below="@id/intro_sec_textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/intro_image2" />
+
+    <ImageView
+        android:id="@+id/intro_first_next_page1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_sec_gif"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        app:srcCompat="@drawable/page2" />
+
+
+</RelativeLayout>

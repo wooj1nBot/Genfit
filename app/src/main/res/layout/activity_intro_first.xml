@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="30dp"
         android:fontFamily="@font/pd_light"
