@@ -48,13 +48,11 @@
         android:id="@+id/intro_sec_gif"
         android:layout_width="240dp"
         android:layout_height="240dp"
-        android:layout_below="@id/intro_sec_textView2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:layout_centerInParent="true"
         android:background="@drawable/intro_image2" />
 
     <ImageView
-        android:id="@+id/intro_first_next_page1"
+        android:id="@+id/intro_sec_next_page1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/intro_sec_gif"
