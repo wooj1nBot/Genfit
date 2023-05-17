@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".introFirst_Activity">
+
+    <TextView
+        android:id="@+id/intro_first_skip_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="top"
+        android:lineSpacingExtra="-3sp"
+        android:text="건너뛰기"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/intro_first_attention1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="96dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="top"
+        android:text="반가워요!"
+        android:textColor="#2E2E2E"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/intro_first_attention2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="130dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="top"
+        android:text="인공지능 스타일리스트"
+        android:textColor="#2E2E2E"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/intro_first_attention3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="164dp"
+        android:fontFamily="@font/montserrat_regular"
+        android:gravity="top"
+        android:lineSpacingExtra="-7sp"
+        android:text="GenFit"
+        android:textColor="#202020"
+        android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/intro_first_attention4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="137dp"
+        android:layout_marginTop="173dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="top"
+        android:text="입니다."
+        android:textColor="#2E2E2E"
+        android:textSize="18sp" />
+
+    <View
+        android:id="@+id/intro_first_gif"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="256dp"
+        android:background="@drawable/intro_image"
+        />
+
+    <TextView
+        android:id="@+id/intro_first_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="250dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="top"
+        android:lineSpacingExtra="-3sp"
+        android:text="다음"
+        android:textColor="#2E2E2E"
+        android:textSize="18sp" />
+
+</RelativeLayout>
