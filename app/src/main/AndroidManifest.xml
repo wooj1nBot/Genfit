@@ -21,10 +21,12 @@
         <activity
             android:name=".Chat.ChatActivity"
             android:exported="false" />
+        <activity android:name=".Preset.PresetActivity"
+            android:exported="false" />
         <activity android:name=".Frags.FragMain"
             android:exported="false" />
         <activity
-            android:name=".Preset.PresetActivity"
+            android:name=".Preset.PresetGenderActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

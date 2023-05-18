@@ -21,6 +21,7 @@ public class PresetGenderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preset_gender);
 
         man_btn = findViewById(R.id.man);
+        woman_btn = findViewById(R.id.woman);
         man_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -17,6 +17,7 @@ public class FragMyPage extends Fragment {
         View view = inflater.inflate(R.layout.activity_mypage, container, false);
 
 
+
         return view;
     }
 }
