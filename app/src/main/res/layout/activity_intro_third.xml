@@ -1,9 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Intro.introThird_Activity">
+    android:orientation="vertical"
+    tools:context=".Intro.introFirst_Activity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/intro_thd_textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="85dp"
+        android:fontFamily="@font/pd_regu"
+        android:text="나만의 코디를 만들고\n공유하기"
+        android:gravity="center"
+        android:textSize="27dp" />
+
+    <TextView
+        android:id="@+id/intro_thd_textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_thd_textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/pd_light"
+        android:gravity="center"
+        android:text="사용자들의 다양한\n패션 취향을 알아볼까요?"
+        android:textSize="18dp" />
+
+    <View
+        android:id="@+id/intro_thd_gif"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/intro_image3" />
+
+    <ImageView
+        android:id="@+id/intro_thd_next_page1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/intro_thd_gif"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        app:srcCompat="@drawable/page3" />
+
+</RelativeLayout>
