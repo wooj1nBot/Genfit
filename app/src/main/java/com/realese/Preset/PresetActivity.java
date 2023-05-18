@@ -29,7 +29,8 @@ public class PresetActivity extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 성별 인텐트
+                Intent intent = new Intent(getApplicationContext(), PresetGenderActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
