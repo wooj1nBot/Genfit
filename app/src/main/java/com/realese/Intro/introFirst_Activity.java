@@ -1,8 +1,10 @@
-package com.realese;
+package com.realese.Intro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.realese.R;
 
 public class introFirst_Activity extends AppCompatActivity {
 

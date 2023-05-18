@@ -1,8 +1,10 @@
-package com.realese;
+package com.realese.Chat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.realese.R;
 
 public class ChatActivity extends AppCompatActivity {
 

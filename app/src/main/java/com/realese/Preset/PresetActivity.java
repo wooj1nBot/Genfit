@@ -1,4 +1,4 @@
-package com.realese;
+package com.realese.Preset;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.realese.R;
 
 public class PresetActivity extends AppCompatActivity {
 
