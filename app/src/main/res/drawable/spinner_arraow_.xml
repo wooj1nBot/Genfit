@@ -1,0 +1,14 @@
+<!-- custom_spinner_arrow.xml -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="12dp"
+    android:height="16dp"
+    android:viewportWidth="16"
+    android:viewportHeight="16">
+
+    <path
+        android:pathData="M1,4 L8,11 L15,4"
+        android:strokeWidth="0.75"
+        android:strokeColor="#000000"
+        android:fillColor="#00000000" />
+
+</vector>
