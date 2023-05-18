@@ -68,14 +68,24 @@
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:text="남성" />
+            android:backgroundTint="#FFFFFF"
+            android:fontFamily="@font/pd_regu"
+            android:text="남성"
+            android:textColor="#2E2E2E"
+            app:strokeColor="#2E2E2E"
+            app:strokeWidth="1dp" />
 
         <Button
             android:id="@+id/woman"
             android:layout_width="240dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:text="여자" />
+            android:backgroundTint="#FFFFFF"
+            android:fontFamily="@font/pd_regu"
+            android:text="여자"
+            android:textColor="#2E2E2E"
+            app:strokeColor="#2E2E2E"
+            app:strokeWidth="1dp" />
     </LinearLayout>
 
 </LinearLayout>
