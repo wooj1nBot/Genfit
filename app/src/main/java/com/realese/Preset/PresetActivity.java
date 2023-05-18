@@ -2,12 +2,15 @@ package com.realese.Preset;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.sax.StartElementListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.realese.Frags.FragMain;
 import com.realese.R;
 
 public class PresetActivity extends AppCompatActivity {
@@ -42,7 +45,9 @@ public class PresetActivity extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(PresetActivity.this, FragMain.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
