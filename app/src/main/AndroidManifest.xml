@@ -13,10 +13,7 @@
         android:theme="@style/Theme.Genfit"
         tools:targetApi="31">
         <activity
-            android:name=".Intro.introThird_Activity"
-            android:exported="false" />
-        <activity
-            android:name=".Intro.IntroSecond_Activity"
+            android:name=".IntroSecond_Activity2"
             android:exported="false" />
         <activity
             android:name=".Intro.introFirst_Activity"
