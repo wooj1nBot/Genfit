@@ -29,7 +29,8 @@ public class PresetActivity extends AppCompatActivity {
         back_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // 성별 인텐트
+                finish();
             }
         });
 
@@ -37,7 +38,7 @@ public class PresetActivity extends AppCompatActivity {
         finish_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                finish();
             }
         });
 
@@ -45,7 +46,7 @@ public class PresetActivity extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PresetActivity.this, FragMain.class);
+                Intent intent = new Intent(getApplicationContext(), FragMain.class);
                 startActivity(intent);
                 finish();
             }

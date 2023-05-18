@@ -46,4 +46,34 @@
         android:layout_marginTop="100dp"
         app:srcCompat="@drawable/page3" />
 
+
+    <View
+        android:id="@+id/intro_thd_start_button"
+        android:layout_width="240dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="65dp"
+        android:background="@drawable/intro_start"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/intro_thd_start_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
+        android:fontFamily="@font/pd_regu"
+        android:gravity="center"
+        android:text="시작하기"
+
+        android:textColor="#FFFFFF"
+        android:textSize="16dp" />
+
+
 </RelativeLayout>
