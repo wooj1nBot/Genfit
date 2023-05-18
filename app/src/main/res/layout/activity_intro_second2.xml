@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Intro.introFirst_Activity">
+    tools:context=".Intro.IntroFirst_Activity">
 
     <TextView
         android:id="@+id/intro_sec_skip_textView"
@@ -19,6 +19,7 @@
         android:gravity="top"
         android:lineSpacingExtra="-3sp"
         android:text="건너뛰기"
+        android:clickable="true"
         android:textSize="16sp" />
 
     <TextView
