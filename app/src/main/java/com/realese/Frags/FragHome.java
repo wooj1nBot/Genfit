@@ -34,10 +34,10 @@ public class FragHome extends Fragment {
         itemList.add(new Item(R.drawable.img_1_2, "김우진", "# 어려워", "324", R.drawable.basic_img, false));
         itemList.add(new Item(R.drawable.img_2_1, "No Time", "# 시티", "1200", R.drawable.basic_img,false));
 
-        GridViewAdapter adapter = new GridViewAdapter(getContext(), itemList);
+        GridViewAdapter_Home adapter = new GridViewAdapter_Home(getContext(), itemList);
         gridView.setAdapter(adapter);
 
-        adapter.setOnHeartClickListener(new GridViewAdapter.OnHeartClickListener() {
+        adapter.setOnHeartClickListener(new GridViewAdapter_Home.OnHeartClickListener() {
             @Override
             public void onHeartClick(int position) {
 

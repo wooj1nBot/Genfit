@@ -13,13 +13,13 @@ import com.realese.R;
 
 import java.util.*;
 
-public class GridViewAdapter extends BaseAdapter {
+public class GridViewAdapter_Home extends BaseAdapter {
 
     private Context context;
     private List<Item> items;
     private OnHeartClickListener heartClickListener;
 
-    public GridViewAdapter(Context context, List<Item> items) {
+    public GridViewAdapter_Home(Context context, List<Item> items) {
         this.context = context;
         this.items = items;
     }
@@ -49,7 +49,7 @@ public class GridViewAdapter extends BaseAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            convertView = inflater.inflate(R.layout.grid_item, parent, false);
+            convertView = inflater.inflate(R.layout.grid_item_home, parent, false);
             holder = new ViewHolder();
             holder.imageView = convertView.findViewById(R.id.grid_imageView);
             holder.textView_nickname = convertView.findViewById(R.id.grid_text_nickname);
