@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.realese.R;
 
-public class IntroSecond_Activity2 extends AppCompatActivity {
+public class IntroSecond_Activity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
