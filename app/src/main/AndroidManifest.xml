@@ -19,6 +19,9 @@
             android:name=".introFirst_Activity"
             android:exported="false" />
         <activity
+            android:name=".PresetActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChatActivity"
             android:exported="false" />
         <activity
