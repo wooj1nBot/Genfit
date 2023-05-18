@@ -24,7 +24,7 @@ public class FragMain extends AppCompatActivity {
         setContentView(R.layout.bottom_menu);
 
         fragment_home = new FragHome();
-        fragment_mypage = new FragMyPage();
+        fragment_mypage = new FragMyPageMain();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragment_home).commitAllowingStateLoss();
 

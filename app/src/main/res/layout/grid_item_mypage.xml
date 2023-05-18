@@ -8,7 +8,7 @@
     <ImageView
         android:id="@+id/grid_imageView_mypage"
         android:layout_width="135dp"
-        android:layout_height="180dp">
+        android:layout_height="165dp">
 
     </ImageView>
 

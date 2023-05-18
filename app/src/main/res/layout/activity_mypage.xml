@@ -84,25 +84,33 @@
         />
     <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:id="@+id/tab_bar">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_feed"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:icon="@drawable/notes"
+            android:clickable="true"
             android:scrollbarSize="4dp" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_like"
             android:layout_width="150dp"
+            android:clickable="true"
             android:layout_height="150dp"
             android:icon="@drawable/favorite" />
     </com.google.android.material.tabs.TabLayout>
-
-    <GridView
-        android:id="@+id/grid_mypage"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="3" />
+        android:layout_height="match_parent">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/mypage_fragment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.fragment.app.FragmentContainerView>
+
+    </FrameLayout>
 </LinearLayout>
