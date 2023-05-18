@@ -21,7 +21,7 @@
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:padding="15dp"
-            app:srcCompat="@drawable/bback" />
+            app:srcCompat="@drawable/prev" />
     </LinearLayout>
 
     <TextView
