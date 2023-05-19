@@ -1,5 +1,6 @@
 package com.realese.Frags;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,16 +9,19 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.realese.Chat.ChatActivity;
 import com.realese.R;
 
 public class FragMain extends AppCompatActivity {
     ImageView bottomNavigationItemView_HOME;
     ImageView bottomNavigationItemView_MyPage;
+    ImageView chat_btn;
 
     private final String TAG = "메인";
 
     Fragment fragment_home;
     Fragment fragment_mypage;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +32,7 @@ public class FragMain extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragment_home).commitAllowingStateLoss();
 
-
+        chat_btn = findViewById(R.id.chat_btn);
         bottomNavigationItemView_HOME = findViewById(R.id.home_btn);
         bottomNavigationItemView_MyPage = findViewById(R.id.my_page_btn);
 
@@ -41,6 +45,12 @@ public class FragMain extends AppCompatActivity {
             }
         });
 
+        chat_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ChatActivity.class));
+            }
+        });
         bottomNavigationItemView_MyPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
