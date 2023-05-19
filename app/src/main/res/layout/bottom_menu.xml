@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="181.8dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="75dp"
         android:clickable="true"
         android:src="@drawable/hanger_img" />
