@@ -162,16 +162,11 @@
             android:paddingBottom="10dp">
 
             <LinearLayout
-                android:layout_width="294dp"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"></LinearLayout>
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -180,6 +175,7 @@
                     <LinearLayout
                         android:layout_width="117dp"
                         android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
                         android:gravity="center_horizontal|center_vertical">
 
                         <Spinner
@@ -199,7 +195,7 @@
 
 
                     </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -215,7 +211,6 @@
                 android:layout_height="match_parent"
                 android:paddingBottom="60dp"
                 android:gravity="center|center_horizontal|center_vertical"
-                android:horizontalSpacing="-50dp"
                 android:numColumns="2"
                 android:verticalSpacing="20dp">
 
