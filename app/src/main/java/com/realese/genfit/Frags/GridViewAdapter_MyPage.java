@@ -1,4 +1,4 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.realese.R;
+import com.realese.genfit.R;
 
 import java.util.List;
 

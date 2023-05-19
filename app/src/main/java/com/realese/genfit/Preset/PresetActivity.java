@@ -1,10 +1,9 @@
-package com.realese.Preset;
+package com.realese.genfit.Preset;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.sax.StartElementListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.realese.Frags.FragMain;
-import com.realese.R;
+import com.realese.genfit.Frags.FragMain;
+import com.realese.genfit.R;
 
 public class PresetActivity extends AppCompatActivity {
 

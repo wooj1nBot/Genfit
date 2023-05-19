@@ -1,4 +1,4 @@
-package com.realese.Intro;
+package com.realese.genfit.Intro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.realese.Preset.PresetGenderActivity;
-import com.realese.R;
+import com.realese.genfit.Preset.PresetGenderActivity;
+import com.realese.genfit.R;
 
 public class IntroSecond_Activity extends AppCompatActivity {
     TextView intro_sec_skip_textView;

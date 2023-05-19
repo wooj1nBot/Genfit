@@ -1,4 +1,4 @@
-package com.realese.Intro;
+package com.realese.genfit.Intro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,9 +8,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.realese.Preset.PresetActivity;
-import com.realese.Preset.PresetGenderActivity;
-import com.realese.R;
+import com.realese.genfit.Preset.PresetGenderActivity;
+import com.realese.genfit.R;
 
 public class IntroFirst_Activity extends AppCompatActivity {
 

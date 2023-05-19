@@ -1,4 +1,4 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.realese.Chat.ChatActivity;
-import com.realese.R;
+import com.realese.genfit.Chat.ChatActivity;
+import com.realese.genfit.R;
 
 public class FragMain extends AppCompatActivity {
     LinearLayout bottomNavigationItemView_HOME;

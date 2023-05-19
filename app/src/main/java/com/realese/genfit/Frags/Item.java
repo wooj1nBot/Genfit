@@ -1,4 +1,4 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 public class Item {
     private int imageResId;

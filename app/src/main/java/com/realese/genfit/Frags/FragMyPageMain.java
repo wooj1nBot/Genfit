@@ -1,19 +1,15 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
-import com.realese.R;
+import com.realese.genfit.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FragMyPageMain extends Fragment {

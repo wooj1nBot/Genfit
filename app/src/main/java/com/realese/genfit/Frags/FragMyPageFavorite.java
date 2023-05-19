@@ -1,4 +1,4 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.realese.R;
+import com.realese.genfit.R;
 
 import java.util.ArrayList;
 import java.util.List;

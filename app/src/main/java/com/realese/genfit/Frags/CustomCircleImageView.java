@@ -1,4 +1,4 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 import android.content.Context;
 import android.graphics.Canvas;

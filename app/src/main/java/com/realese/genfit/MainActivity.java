@@ -1,8 +1,10 @@
-package com.realese;
+package com.realese.genfit;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.realese.genfit.R;
 
 public class MainActivity extends AppCompatActivity {
 

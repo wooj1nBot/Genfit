@@ -1,4 +1,4 @@
-package com.realese.Frags;
+package com.realese.genfit.Frags;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,10 +8,9 @@ import android.widget.GridView;
 
 import androidx.fragment.app.Fragment;
 
-import com.realese.R;
-
 import java.util.ArrayList;
 import java.util.List;
+import com.realese.genfit.R;
 
 public class FragHome extends Fragment {
     GridView gridView;

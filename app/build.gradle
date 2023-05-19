@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.realese'
+    namespace 'com.realese.genfit'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.realese"
+        applicationId "com.realese.genfit"
         minSdk 24
         targetSdk 33
         versionCode 1

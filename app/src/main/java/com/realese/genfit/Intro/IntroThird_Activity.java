@@ -1,4 +1,4 @@
-package com.realese.Intro;
+package com.realese.genfit.Intro;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.realese.Preset.PresetGenderActivity;
-import com.realese.R;
+import com.realese.genfit.Preset.PresetGenderActivity;
+import com.realese.genfit.R;
 
 public class IntroThird_Activity extends AppCompatActivity {
 

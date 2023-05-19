@@ -1,15 +1,14 @@
-package com.realese.Chat;
+package com.realese.genfit.Chat;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.realese.Frags.FragMain;
-import com.realese.R;
+import com.realese.genfit.Frags.FragMain;
+import com.realese.genfit.R;
 
 public class ChatActivity extends AppCompatActivity {
 
