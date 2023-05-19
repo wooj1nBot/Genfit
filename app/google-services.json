@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "897293696242",
+    "project_id": "genfit-7ba0d",
+    "storage_bucket": "genfit-7ba0d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897293696242:android:532f9e2f28ee8e2468a46b",
+        "android_client_info": {
+          "package_name": "com.realese.genfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897293696242-9hfnuc1tvk1tit28hjmejpicrk6il6c8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.realese.genfit",
+            "certificate_hash": "4af5e59a4e20aab51d099471642f934c8b29c9bf"
+          }
+        },
+        {
+          "client_id": "897293696242-1nkj6nsf0lmp36mcpi39amn5ohkar5qu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGD3FrXNKP3ZeVjJTz-iUrjydgVlLCJqs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897293696242-1nkj6nsf0lmp36mcpi39amn5ohkar5qu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
