@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,8 +14,8 @@ import com.realese.Chat.ChatActivity;
 import com.realese.R;
 
 public class FragMain extends AppCompatActivity {
-    ImageView bottomNavigationItemView_HOME;
-    ImageView bottomNavigationItemView_MyPage;
+    LinearLayout bottomNavigationItemView_HOME;
+    LinearLayout bottomNavigationItemView_MyPage;
     ImageView chat_btn;
 
     private final String TAG = "메인";

@@ -50,15 +50,17 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="165dp"
+                        android:layout_width="149dp"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"></LinearLayout>
+                        android:orientation="horizontal"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        >
 
                         <ImageView
                             android:id="@+id/imageView2"
@@ -71,12 +73,15 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        >
 
                         <ImageView
                             android:id="@+id/imageView3"
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:src="@drawable/alarm" />
@@ -112,6 +117,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:id="@+id/recommed"
                             android:layout_width="52dp"
                             android:layout_height="38dp"
@@ -162,6 +168,11 @@
             android:paddingBottom="10dp">
 
             <LinearLayout
+                android:layout_width="294dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"></LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -169,13 +180,12 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical">
 
                     <LinearLayout
+                        android:layout_alignParentEnd="true"
                         android:layout_width="117dp"
                         android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
                         android:gravity="center_horizontal|center_vertical">
 
                         <Spinner
@@ -212,6 +222,7 @@
                 android:paddingBottom="60dp"
                 android:gravity="center|center_horizontal|center_vertical"
                 android:numColumns="2"
+                android:horizontalSpacing="-15dp"
                 android:verticalSpacing="20dp">
 
             </GridView>

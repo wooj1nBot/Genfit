@@ -8,6 +8,7 @@
     tools:context=".Intro.IntroFirst_Activity">
 
     <TextView
+        android:foreground="?android:attr/selectableItemBackground"
         android:id="@+id/intro_sec_skip_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
