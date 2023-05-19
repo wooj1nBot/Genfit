@@ -79,7 +79,7 @@
                         android:background="@null"
                         android:ems="10"
                         android:inputType="text"
-                        android:text="NameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameNameName" />
+                        android:text="chat Text" />
 
                     <ImageView
                         android:id="@+id/imageView3"

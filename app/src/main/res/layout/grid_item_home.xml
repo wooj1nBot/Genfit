@@ -65,6 +65,7 @@
                     android:layout_height="20dp"
                     android:clickable="true"
                     android:contextClickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:src="@drawable/heart_line" />
 
             <TextView
