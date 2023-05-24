@@ -184,6 +184,7 @@ public class ChatActivity extends AppCompatActivity {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
+                Log.d("tore", throwable.toString());
                 gptChat.gptCallback.onFail();
             }
         });
