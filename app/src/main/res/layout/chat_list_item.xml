@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/opponent_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/opponent_profile"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_below="@id/tv_name"
+            android:layout_centerVertical="false"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="false"
+            android:src="@drawable/genny"
+            app:civ_border_color="#ffffff"
+            app:civ_border_width="0dp" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/cd_opponent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/pd_regu"
+            android:text="Genney"
+            android:textColor="#9D9D9D"
+            android:textSize="12dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cd_opponent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/opponent_profile"
+            android:minWidth="200dp"
+            android:visibility="visible"
+            app:cardBackgroundColor="#F4F4F4"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E2E2E2"
+            app:strokeWidth="0.4dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_opponent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:fontFamily="@font/pd_light"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:lineSpacingExtra="4sp"
+                    android:maxWidth="300dp"
+                    android:padding="15dp"
+                    android:textColor="#505050"
+                    android:textSize="16dp"
+                    android:visibility="visible" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/load_view"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/tv_opponent"
+                    android:layout_centerInParent="true"
+                    android:visibility="visible"
+                    app:lottie_autoPlay="false"
+                    app:lottie_fileName="loading.json"
+                    app:lottie_loop="true"></com.airbnb.lottie.LottieAnimationView>
+
+                <TextView
+                    android:id="@+id/tv_load"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/load_view"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/pd_light"
+                    android:text="착샷 생성중..."
+                    android:textColor="#1C549C"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_opponent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_opponent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:maxWidth="200dp"
+                    android:minWidth="100dp"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/gender" />
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/my_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cd_my"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:visibility="visible"
+            app:cardBackgroundColor="#E8E8E8"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="0dp">
+
+            <TextView
+                android:id="@+id/tv_my"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/stroke_my"
+                android:clickable="true"
+                android:fontFamily="@font/pd_light"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:lineSpacingExtra="4sp"
+                android:maxWidth="300dp"
+
+                android:padding="15dp"
+                android:textColor="#ffffff"
+                android:textSize="14sp"
+                android:visibility="visible" />
+
+
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</RelativeLayout>

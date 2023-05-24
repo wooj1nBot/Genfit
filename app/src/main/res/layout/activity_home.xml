@@ -63,7 +63,7 @@
                         >
 
                         <ImageView
-                            android:id="@+id/imageView2"
+                            android:id="@+id/tag"
                             android:layout_width="36dp"
                             android:layout_height="27dp"
                             android:layout_weight="1"
@@ -78,7 +78,7 @@
                         >
 
                         <ImageView
-                            android:id="@+id/imageView3"
+                            android:id="@+id/send"
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
                             android:foreground="?android:attr/selectableItemBackground"
