@@ -29,6 +29,7 @@ public class IntroSecond_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), PresetGenderActivity.class));
                 finish();
+                overridePendingTransition(R.anim.horizon_enter, R.anim.none);
             }
         });
 
@@ -37,6 +38,7 @@ public class IntroSecond_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), IntroThird_Activity.class));
                 finish();
+                overridePendingTransition(R.anim.horizon_enter, R.anim.none);
             }
         });
 
@@ -45,6 +47,7 @@ public class IntroSecond_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), IntroFirst_Activity.class));
                 finish();
+                overridePendingTransition(R.anim.horizon_exit, R.anim.none);
             }
         });
     }

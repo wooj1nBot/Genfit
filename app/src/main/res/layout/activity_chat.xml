@@ -59,9 +59,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="15dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_marginBottom="5dp"
                     app:cardBackgroundColor="#FAFAFA"
                     app:cardCornerRadius="20dp"
@@ -80,9 +80,9 @@
                             android:layout_height="50dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="5dp"
-                            android:padding="12dp"
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"
+                            android:padding="12dp"
                             app:srcCompat="@drawable/tag" />
 
                         <EditText
@@ -93,12 +93,13 @@
                             android:layout_weight="1"
                             android:background="@null"
                             android:fontFamily="@font/pd_medium"
-                            android:hint="채팅을 입력하세요."
+                            android:hint="데이트에 입고 갈 남성 코디 추천해 줘"
                             android:inputType="textMultiLine"
                             android:maxLines="4"
                             android:minHeight="40dp"
                             android:paddingTop="5dp"
-                            android:paddingBottom="5dp" />
+                            android:paddingBottom="5dp"
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/send"

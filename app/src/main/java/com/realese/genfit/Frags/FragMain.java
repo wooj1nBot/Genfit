@@ -1,6 +1,7 @@
 package com.realese.genfit.Frags;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.realese.genfit.Chat.ChatActivity;
+import com.realese.genfit.Intro.IntroFirst_Activity;
 import com.realese.genfit.R;
 
 public class FragMain extends AppCompatActivity {
@@ -26,6 +28,15 @@ public class FragMain extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences preferences = getSharedPreferences("pref", MODE_PRIVATE);
+
+        if (!preferences.getBoolean("isIntro", false)){
+            Intent intent = new Intent(this, IntroFirst_Activity.class);
+            startActivity(intent);
+            finish();
+        }
+
         setContentView(R.layout.bottom_menu);
 
         fragment_home = new FragHome();

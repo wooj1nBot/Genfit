@@ -81,13 +81,16 @@
         android:textColor="#2E2E2E"
         android:textSize="18sp" />
 
-    <View
-        android:id="@+id/intro_first_gif"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/load_view"
         android:layout_width="240dp"
         android:layout_height="240dp"
         android:layout_centerInParent="true"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/intro_image" />
+        android:visibility="visible"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="review.json"
+        app:lottie_loop="true"></com.airbnb.lottie.LottieAnimationView>
+
 
 
     <RelativeLayout
@@ -129,7 +132,7 @@
         android:id="@+id/intro_first_next_page1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/intro_first_gif"
+        android:layout_below="@id/load_view"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         app:srcCompat="@drawable/page1" />
