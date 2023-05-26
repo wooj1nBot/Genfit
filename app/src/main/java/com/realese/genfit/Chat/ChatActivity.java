@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -28,7 +26,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -43,8 +40,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.card.MaterialCardView;
+import com.realese.genfit.BuildConfig;
 import com.realese.genfit.Frags.FragMain;
-import com.realese.genfit.MainActivity;
 import com.realese.genfit.R;
 import com.realese.genfit.retrofit.Request;
 import com.realese.genfit.retrofit.Response;
@@ -58,14 +55,12 @@ import com.theokanning.openai.service.OpenAiService;
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -84,6 +79,9 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ChatActivity extends AppCompatActivity {
+
+    String OPEN_AI_KEY = BuildConfig.OPENAI_API_KEY;
+
 
     ImageView back;
     RecyclerView rc;
@@ -228,7 +226,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
         ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultClient(getString(R.string.API_KEY), Duration.ofSeconds(20))
+        OkHttpClient client = defaultClient(OPEN_AI_KEY, Duration.ofSeconds(20))
                 .newBuilder()
                 .build();
 
@@ -392,7 +390,7 @@ public class ChatActivity extends AppCompatActivity {
                 "For example, you could structure your command as \"keyword1, keyword2, keyword3\".";
 
         ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultClient(getString(R.string.API_KEY), Duration.ofSeconds(500))
+        OkHttpClient client = defaultClient(OPEN_AI_KEY, Duration.ofSeconds(500))
                 .newBuilder()
                 .build();
 
