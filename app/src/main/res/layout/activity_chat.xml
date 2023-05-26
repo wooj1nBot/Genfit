@@ -93,7 +93,7 @@
                             android:layout_weight="1"
                             android:background="@null"
                             android:fontFamily="@font/pd_medium"
-                            android:hint="데이트에 입고 갈 남성 코디 추천해 줘"
+                            android:hint="사랑스러운 코디 추천해 줘"
                             android:inputType="textMultiLine"
                             android:maxLines="4"
                             android:minHeight="40dp"

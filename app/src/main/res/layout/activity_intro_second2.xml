@@ -46,18 +46,21 @@
         android:text="어떤 옷을 입을 지\n 고민을 줄여드릴게요"
         android:textSize="18dp" />
 
-    <View
-        android:id="@+id/intro_sec_gif"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/load_view"
         android:layout_width="240dp"
         android:layout_height="240dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/intro_image2" />
+        android:visibility="visible"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="face.json"
+        app:lottie_loop="true"></com.airbnb.lottie.LottieAnimationView>
 
     <ImageView
         android:id="@+id/intro_sec_next_page1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/intro_sec_gif"
+        android:layout_below="@id/load_view"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         app:srcCompat="@drawable/page2" />

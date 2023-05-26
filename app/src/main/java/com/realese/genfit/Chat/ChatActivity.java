@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
@@ -43,6 +44,7 @@ import com.bumptech.glide.request.target.Target;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.card.MaterialCardView;
 import com.realese.genfit.Frags.FragMain;
+import com.realese.genfit.MainActivity;
 import com.realese.genfit.R;
 import com.realese.genfit.retrofit.Request;
 import com.realese.genfit.retrofit.Response;
@@ -89,7 +91,9 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<Chat> chats;
     private Handler handler;
 
+    EditText editText;
 
+    private long pressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        EditText editText = findViewById(R.id.edit);
+        editText = findViewById(R.id.edit);
         ImageView send = findViewById(R.id.send);
 
         send.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +124,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String message = editText.getText().toString();
                 if(!message.equals("")) {
-                    send(txtToPrompt(Arrays.asList("여자", "170cm", "70kg"), message));
+                    send(txtToPrompt(Arrays.asList("여자", "170cm", "70kg"), message), null);
                     editText.setText("");
                 }
             }
@@ -185,30 +189,46 @@ public class ChatActivity extends AppCompatActivity {
                 "로 추천해줄 수 있어.";
     }
 
-    public void send(String text) {
+    public void send(String text, Chat lastChat) {
 
-        Chat userChat = new Chat(text, false);
-        chats.add(userChat);
+        Chat gptChat;
+        if (lastChat == null) {
+            Chat userChat = new Chat(text, false);
+            chats.add(userChat);
 
+            gptChat = new Chat("", true);
+            gptChat.state = Chat.STATE_LOAD_TEXT;
+            gptChat.userText = text;
 
-        Chat gptChat = new Chat("", true);
-        gptChat.state = Chat.STATE_LOAD_TEXT;
+            chats.add(gptChat);
 
+            adopter.notifyDataSetChanged();
 
-        chats.add(gptChat);
+            rc.post(new Runnable() {
+                @Override
+                public void run() {
+                    // Call smooth scroll
+                    rc.smoothScrollToPosition(getPos(gptChat));
+                }
+            });
 
-        adopter.notifyDataSetChanged();
-        rc.post(new Runnable() {
-            @Override
-            public void run() {
-                // Call smooth scroll
-                rc.smoothScrollToPosition(adopter.getItemCount() - 1);
+        }else{
+
+            if (lastChat.holder != null) {
+                lastChat.holder.tv_op.setVisibility(View.GONE);
+                lastChat.holder.showLoad("코디 생성 중...");
             }
-        });
+
+            lastChat.state = Chat.STATE_LOAD_TEXT;
+            lastChat.text = "";
+            lastChat.prompt = "";
+            gptChat = lastChat;
+        }
+
 
 
         ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultClient(getString(R.string.API_KEY), Duration.ofSeconds(500))
+        OkHttpClient client = defaultClient(getString(R.string.API_KEY), Duration.ofSeconds(20))
                 .newBuilder()
                 .build();
 
@@ -250,6 +270,7 @@ public class ChatActivity extends AppCompatActivity {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
+                Log.d("fial", throwable.toString());
                 gptChat.gptCallback.onFail();
             }
         });
@@ -264,17 +285,18 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (gptChat.holder == null) return;
+                        editText.setEnabled(false);
                         ChatListAdopter.ViewHolder holder = gptChat.holder;
                         holder.tv_op.setText(gptChat.text);
+                        holder.change.setVisibility(View.GONE);
+                        holder.tv_remake.setVisibility(View.GONE);
                         holder.tv_op.setVisibility(View.VISIBLE);
-                        holder.tv_load.setVisibility(View.GONE);
-                        holder.loadView.setVisibility(View.GONE);
-                        holder.loadView.pauseAnimation();
+                        holder.hideLoad();
                         rc.post(new Runnable() {
                             @Override
                             public void run() {
                                 // Call smooth scroll
-                                rc.smoothScrollToPosition(adopter.getItemCount() - 1);
+                                rc.smoothScrollToPosition(getPos(gptChat));
                             }
                         });
                     }
@@ -289,7 +311,10 @@ public class ChatActivity extends AppCompatActivity {
                     public void run() {
                         service.shutdownExecutor();
                         if (gptChat.holder == null) return;
+                        editText.setEnabled(true);
                         gptChat.holder.change.setTag(gptChat);
+                        gptChat.holder.tv_remake.setVisibility(View.VISIBLE);
+                        gptChat.holder.tv_remake.setText("코디 다시 생성하기");
                         gptChat.holder.change.setVisibility(View.VISIBLE);
                         gptChat.holder.change.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -303,7 +328,7 @@ public class ChatActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 // Call smooth scroll
-                                rc.smoothScrollToPosition(adopter.getItemCount() - 1);
+                                rc.smoothScrollToPosition(getPos(gptChat));
                             }
                         });
                     }
@@ -317,12 +342,13 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (gptChat.holder == null) return;
+                        editText.setEnabled(true);
                         ChatListAdopter.ViewHolder holder = gptChat.holder;
+                        holder.tv_remake.setVisibility(View.GONE);
+                        holder.change.setVisibility(View.GONE);
                         holder.tv_op.setText("죄송합니다. 오류가 발생했습니다.");
                         holder.tv_op.setVisibility(View.VISIBLE);
-                        holder.tv_load.setVisibility(View.GONE);
-                        holder.loadView.setVisibility(View.GONE);
-                        holder.loadView.pauseAnimation();
+                        holder.hideLoad();
                     }
                 });
 
@@ -332,13 +358,30 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if ( pressedTime == 0 ) {
+            Toast.makeText(ChatActivity.this, " 한 번 더 누르면 종료됩니다." , Toast.LENGTH_LONG).show();
+            pressedTime = System.currentTimeMillis();
+        }
+        else {
+            int seconds = (int) (System.currentTimeMillis() - pressedTime);
+
+            if ( seconds > 2000 ) {
+                Toast.makeText(ChatActivity.this, " 한 번 더 누르면 종료됩니다." , Toast.LENGTH_LONG).show();
+                pressedTime = 0 ;
+            }
+            else {
+                super.onBackPressed();
+                finish(); // app 종료 시키기
+            }
+        }
+    }
+
     public void outFitToPrompt(Chat chat){
 
         if (chat.holder != null) {
-            chat.holder.loadView.setVisibility(View.VISIBLE);
-            chat.holder.tv_load.setVisibility(View.VISIBLE);
-            chat.holder.loadView.playAnimation();
-            chat.holder.tv_load.setText("이미지 생성 중...");
+            chat.holder.showLoad("이미지 생성 중...");
             chat.state = Chat.STATE_LOAD_IMAGE;
         }
 
@@ -390,6 +433,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             void onComplete() {
+                Log.d("prompt", chat.prompt);
                 promptToImage(chat);
             }
 
@@ -398,10 +442,7 @@ public class ChatActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        chat.holder.tv_load.setVisibility(View.GONE);
-                        chat.holder.loadView.setVisibility(View.GONE);
-                        chat.holder.loadView.pauseAnimation();
-
+                        chat.holder.hideLoad();
                         chat.holder.change.setVisibility(View.VISIBLE);
                     }
                 });
@@ -511,11 +552,12 @@ public class ChatActivity extends AppCompatActivity {
 
                                 chat.holder.cdiv.setVisibility(View.VISIBLE);
                                 chat.holder.imageView.setVisibility(View.VISIBLE);
-                                chat.holder.imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                chat.holder.tv_remake.setVisibility(View.VISIBLE);
+                                chat.holder.tv_remake.setText("착용샷 다시 생성하기");
+                                chat.holder.imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                                     @Override
-                                    public void onGlobalLayout() {
-                                        chat.holder.imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                        rc.smoothScrollToPosition(adopter.getItemCount()-1);
+                                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                                        rc.smoothScrollToPosition(getPos(chat));
                                     }
                                 });
                                 Glide.with(ChatActivity.this).load(chat.imagePath).addListener(new RequestListener<Drawable>() {
@@ -538,9 +580,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (chat.holder != null) {
-                            chat.holder.tv_load.setVisibility(View.GONE);
-                            chat.holder.loadView.setVisibility(View.GONE);
-                            chat.holder.loadView.pauseAnimation();
+                            chat.holder.hideLoad();
                         }
                     }
                 });
@@ -555,9 +595,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (chat.holder != null) {
-                            chat.holder.tv_load.setVisibility(View.GONE);
-                            chat.holder.loadView.setVisibility(View.GONE);
-                            chat.holder.loadView.pauseAnimation();
+                            chat.holder.hideLoad();
                         }
                     }
                 });
@@ -577,10 +615,12 @@ public class ChatActivity extends AppCompatActivity {
         public static final int STATE_ERROR = 5;
 
         String text;
+        String userText;
         boolean isGPT;
-        int state = 1;
+        int state = STATE_LOAD_TEXT;
         String prompt = "";
         File imagePath;
+        int remakeCount = 0;
         GptCallback gptCallback;
         ChatListAdopter.ViewHolder holder;
 
@@ -601,7 +641,10 @@ public class ChatActivity extends AppCompatActivity {
         void onFail(){}
     }
 
-
+    public int getPos(Chat chat){
+        if (chats.contains(chat)) return chats.indexOf(chat);
+        return chats.size() - 1;
+    }
 
 
 
@@ -632,35 +675,59 @@ public class ChatActivity extends AppCompatActivity {
                   holder.my_parent.setVisibility(View.GONE);
                   holder.op_parent.setVisibility(View.VISIBLE);
                   holder.cdiv.setVisibility(View.GONE);
+                  holder.change.setVisibility(View.GONE);
+                  holder.tv_remake.setVisibility(View.GONE);
+                  holder.tv_remake.setTag(chat);
+                  holder.tv_remake.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+
+                          Chat chat = (Chat) v.getTag();
+                          if (chat.state == Chat.STATE_COMPLETE_TEXT){
+                              if (chat.remakeCount < 5) {
+                                  chat.remakeCount++;
+                                  send(chat.userText, chat);
+                              }else{
+                                  Toast.makeText(ChatActivity.this, "한 코디당 재생성 횟수는 5번까지 입니다.", Toast.LENGTH_SHORT).show();
+                              }
+                          }
+                          if (chat.state == Chat.STATE_COMPLETE_IMAGE){
+                              if (chat.remakeCount < 5) {
+                                  chat.remakeCount++;
+                                  chat.holder.showLoad("이미지 생성 중...");
+                                  chat.state = Chat.STATE_LOAD_IMAGE;
+                                  promptToImage(chat);
+                              }else{
+                                  Toast.makeText(ChatActivity.this, "한 코디당 재생성 횟수는 5번까지 입니다.", Toast.LENGTH_SHORT).show();
+                              }
+                          }
+                      }
+                  });
 
                   chat.holder = holder;
 
                   if (chat.state == Chat.STATE_LOAD_TEXT || chat.state == Chat.STATE_LOAD_IMAGE){
                       holder.tv_op.setVisibility(View.GONE);
-                      holder.loadView.setVisibility(View.VISIBLE);
-                      holder.tv_load.setVisibility(View.VISIBLE);
-                      holder.loadView.playAnimation();
 
                       if (chat.state == Chat.STATE_LOAD_IMAGE){
-                          holder.tv_load.setText("착샷 생성 중...");
+                          holder.showLoad("착용샷 생성 중...");
                       }else{
-                          holder.tv_load.setText("코디 생성 중...");
+                          holder.showLoad("코디 생성 중...");
                       }
-                  } else if (chat.state == Chat.STATE_ERROR) {
+                  }
+                  else if (chat.state == Chat.STATE_ERROR) {
                       holder.tv_op.setText("죄송합니다. 오류가 발생했습니다.");
                       holder.tv_op.setVisibility(View.VISIBLE);
-                      holder.tv_load.setVisibility(View.GONE);
-                      holder.loadView.setVisibility(View.GONE);
-                      holder.loadView.pauseAnimation();
+                      holder.hideLoad();
 
-                  }else if (chat.state == Chat.STATE_COMPLETE_TEXT){
+                  }
+                  else if (chat.state == Chat.STATE_COMPLETE_TEXT){
 
                       holder.tv_op.setVisibility(View.VISIBLE);
-                      holder.tv_load.setVisibility(View.GONE);
-                      holder.loadView.setVisibility(View.GONE);
-                      holder.loadView.pauseAnimation();
+                      holder.hideLoad();
                       holder.tv_op.setText(chat.text);
-
+                      holder.tv_remake.setVisibility(View.VISIBLE);
+                      chat.holder.tv_remake.setText("코디 다시 생성하기");
                       holder.change.setVisibility(View.VISIBLE);
 
                       holder.change.setTag(chat);
@@ -675,14 +742,22 @@ public class ChatActivity extends AppCompatActivity {
                   }else if (chat.state == Chat.STATE_COMPLETE_IMAGE){
 
                       holder.tv_op.setVisibility(View.VISIBLE);
-                      holder.tv_load.setVisibility(View.GONE);
-                      holder.loadView.setVisibility(View.GONE);
-                      holder.loadView.pauseAnimation();
                       holder.tv_op.setText(chat.text);
-
+                      holder.hideLoad();
+                      holder.tv_remake.setVisibility(View.VISIBLE);
+                      chat.holder.tv_remake.setText("착용샷 다시 생성하기");
                       holder.change.setVisibility(View.GONE);
                       holder.change.setTag(chat);
                       holder.cdiv.setVisibility(View.VISIBLE);
+                      holder.imageView.setTag(chat);
+                      holder.imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                          @Override
+                          public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                              rc.smoothScrollToPosition(getPos(chat));
+                          }
+                      });
+
+
                       Glide.with(ChatActivity.this).load(chat.imagePath).addListener(new RequestListener<Drawable>() {
                           @Override
                           public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -691,13 +766,6 @@ public class ChatActivity extends AppCompatActivity {
 
                           @Override
                           public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                              rc.post(new Runnable() {
-                                  @Override
-                                  public void run() {
-                                      // Call smooth scroll
-                                      rc.smoothScrollToPosition(adopter.getItemCount() - 1);
-                                  }
-                              });
                               return false;
                           }
                       }).into(holder.imageView);
@@ -705,10 +773,8 @@ public class ChatActivity extends AppCompatActivity {
                   }
                   else{
                       holder.tv_op.setVisibility(View.VISIBLE);
-                      holder.tv_load.setVisibility(View.GONE);
-                      holder.loadView.setVisibility(View.GONE);
-                      holder.loadView.pauseAnimation();
                       holder.tv_op.setText(chat.text);
+                      holder.hideLoad();
                   }
 
 
@@ -731,8 +797,11 @@ public class ChatActivity extends AppCompatActivity {
             RelativeLayout op_parent;
             RelativeLayout my_parent;
 
+            RelativeLayout load;
+
             TextView tv_op;
             TextView tv_my;
+            TextView tv_remake;
 
             LottieAnimationView loadView;
             TextView tv_load;
@@ -751,6 +820,26 @@ public class ChatActivity extends AppCompatActivity {
                 imageView = itemView.findViewById(R.id.iv_opponent);
                 change = itemView.findViewById(R.id.change_image);
                 cdiv = itemView.findViewById(R.id.cdiv);
+                load = itemView.findViewById(R.id.load);
+                tv_remake = itemView.findViewById(R.id.remake);
+            }
+
+
+            public void showLoad(String text){
+                load.setVisibility(View.VISIBLE);
+                loadView.setVisibility(View.VISIBLE);
+                tv_load.setVisibility(View.VISIBLE);
+                tv_load.setText(text);
+                loadView.playAnimation();
+                tv_remake.setVisibility(View.GONE);
+                cdiv.setVisibility(View.GONE);
+            }
+
+            public void hideLoad(){
+                load.setVisibility(View.GONE);
+                loadView.setVisibility(View.GONE);
+                tv_load.setVisibility(View.GONE);
+                loadView.cancelAnimation();
             }
         }
 
