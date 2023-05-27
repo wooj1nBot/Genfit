@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@null"
     android:orientation="vertical"
-    tools:context=".genfit.Preset.PresetActivity">
+    tools:context="Preset.PresetActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

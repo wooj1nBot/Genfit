@@ -8,13 +8,14 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
+import com.realese.genfit.items.Cody;
 import com.realese.genfit.R;
 
 import java.util.List;
 
 public class FragMyPageMain extends Fragment {
 
-    List<Item> itemList;
+    List<Cody> itemList;
     Fragment grid_frag_notes, grid_frag_favorites;
 
     TabLayout tab_bar;

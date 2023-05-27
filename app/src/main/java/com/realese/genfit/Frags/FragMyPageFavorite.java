@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.realese.genfit.items.Cody;
 import com.realese.genfit.R;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 public class FragMyPageFavorite extends Fragment {
 
     GridView gridView;
-    List<Item> itemList;
+    List<Cody> itemList;
 
     @Nullable
     @Override
@@ -28,7 +29,7 @@ public class FragMyPageFavorite extends Fragment {
         gridView = view.findViewById(R.id.grid_mypage_favorite);
 
         itemList = new ArrayList<>();
-        itemList.add(new Item(R.drawable.img_1_1, "MK474", "# 꾸안꾸", "120", R.drawable.basic_img, false));
+        //itemList.add(new Cody(R.drawable.img_1_1, "MK474", "# 꾸안꾸", "120", R.drawable.basic_img, false));
 
         GridViewAdapter_MyPage adapter_myPage = new GridViewAdapter_MyPage(getContext(), itemList);
         gridView.setAdapter(adapter_myPage);

@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.realese.genfit.items.Cody;
 import com.realese.genfit.R;
 
 public class FragHome extends Fragment {
     GridView gridView;
-    List<Item> itemList;
+    List<Cody> itemList;
 
     public FragHome() {
         // Required empty public constructor
@@ -29,9 +31,9 @@ public class FragHome extends Fragment {
         gridView = view.findViewById(R.id.main_grid);
 
         itemList = new ArrayList<>();
-        itemList.add(new Item(R.drawable.img_1_1, "MK474", "# 꾸안꾸", "120", R.drawable.basic_img, false));
-        itemList.add(new Item(R.drawable.img_1_2, "김우진", "# 어려워", "324", R.drawable.basic_img, false));
-        itemList.add(new Item(R.drawable.img_2_1, "No Time", "# 시티", "1200", R.drawable.basic_img,false));
+        //itemList.add(new Cody(R.drawable.img_1_1, "MK474", "# 꾸안꾸", "120", R.drawable.basic_img, false));
+        //itemList.add(new Cody(R.drawable.img_1_2, "김우진", "# 어려워", "324", R.drawable.basic_img, false));
+        //itemList.add(new Cody(R.drawable.img_2_1, "No Time", "# 시티", "1200", R.drawable.basic_img,false));
 
         GridViewAdapter_Home adapter = new GridViewAdapter_Home(getContext(), itemList);
         gridView.setAdapter(adapter);

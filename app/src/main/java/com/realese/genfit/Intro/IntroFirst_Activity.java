@@ -3,6 +3,7 @@ package com.realese.genfit.Intro;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -27,6 +28,9 @@ public class IntroFirst_Activity extends AppCompatActivity {
         intro_first_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = getSharedPreferences("pref", MODE_PRIVATE).edit();
+                editor.putBoolean("isIntro", true);
+                editor.apply();
                 startActivity(new Intent(getApplicationContext(), IntroSecond_Activity.class));
                 finish();
                 overridePendingTransition(R.anim.horizon_enter, R.anim.none);
@@ -36,6 +40,9 @@ public class IntroFirst_Activity extends AppCompatActivity {
         intro_first_skip_textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences.Editor editor = getSharedPreferences("pref", MODE_PRIVATE).edit();
+                editor.putBoolean("isIntro", true);
+                editor.apply();
                 startActivity(new Intent(getApplicationContext(), PresetGenderActivity.class));
                 finish();
                 overridePendingTransition(R.anim.horizon_enter, R.anim.none);

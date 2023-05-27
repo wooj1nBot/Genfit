@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.realese.genfit.items.Cody;
 import com.realese.genfit.R;
 
 import java.util.List;
@@ -15,9 +16,9 @@ import java.util.List;
 public class GridViewAdapter_MyPage extends BaseAdapter {
 
     private Context context;
-    private List<Item> items;
+    private List<Cody> items;
 
-    public GridViewAdapter_MyPage(Context context, List<Item> items) {
+    public GridViewAdapter_MyPage(Context context, List<Cody> items) {
         this.context = context;
         this.items = items;
     }
@@ -56,9 +57,9 @@ public class GridViewAdapter_MyPage extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Item item = items.get(position);
+        Cody item = items.get(position);
 
-        holder.imageView.setBackgroundResource(item.getImageResId());
+        holder.imageView.setBackgroundResource(item.getImageURL());
         //holder.textView_nickname.setText(item.getNick_name());
         //holder.textView_tagging.setText(item.getText_tag());
         //holder.likes.setText(item.getLikes());

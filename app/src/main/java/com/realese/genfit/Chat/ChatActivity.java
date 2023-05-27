@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -39,10 +40,17 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.realese.genfit.BuildConfig;
 import com.realese.genfit.Frags.FragMain;
 import com.realese.genfit.R;
+import com.realese.genfit.items.User;
+import com.realese.genfit.items.UserSingleton;
 import com.realese.genfit.retrofit.Request;
 import com.realese.genfit.retrofit.Response;
 import com.realese.genfit.retrofit.RetrofitService;
@@ -93,11 +101,14 @@ public class ChatActivity extends AppCompatActivity {
 
     private long pressedTime;
 
+    User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        user = UserSingleton.getInstance(getApplicationContext());
         back = findViewById(R.id.back);
         rc = findViewById(R.id.rc);
         chats = new ArrayList<>();
@@ -105,6 +116,7 @@ public class ChatActivity extends AppCompatActivity {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rc.setLayoutManager(linearLayoutManager);
         rc.setAdapter(adopter);
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +200,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void send(String text, Chat lastChat) {
+        // gpt한테 보내는 함수
 
         Chat gptChat;
         if (lastChat == null) {
@@ -211,7 +224,6 @@ public class ChatActivity extends AppCompatActivity {
             });
 
         }else{
-
             if (lastChat.holder != null) {
                 lastChat.holder.tv_op.setVisibility(View.GONE);
                 lastChat.holder.showLoad("코디 생성 중...");
@@ -268,7 +280,7 @@ public class ChatActivity extends AppCompatActivity {
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                Log.d("fial", throwable.toString());
+                Log.d("on fail", throwable.toString());
                 gptChat.gptCallback.onFail();
             }
         });
@@ -471,7 +483,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    public static byte[] StringToBitmap(String encodedString) {
+    public static byte[] StringToByte(String encodedString) {
         try {
             return Base64.decode(encodedString, Base64.DEFAULT);
         } catch (Exception e) {
@@ -499,7 +511,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public File saveCache(byte[] bytes){
-        File file = new File(getFilesDir(), System.currentTimeMillis() + ".jpg");
+        String file_name = System.currentTimeMillis() + ".jpg";
+        File file = new File(getFilesDir(), file_name);
         try {
             FileOutputStream stream = new FileOutputStream(file);
             stream.write(bytes);
@@ -509,6 +522,43 @@ public class ChatActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        // Firebase Storage에 이미지 업로드
+        Uri fileUri = Uri.fromFile(file);
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imageRef = storageRef.child("images/" + file_name);
+        UploadTask uploadTask = imageRef.putFile(fileUri);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // 이미지 업로드 성공
+                Log.d("FirebaseStorage", "Image uploaded successfully");
+
+                // 이미지 다운로드 URL 얻기
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        String imageUrl = uri.toString();
+                        Log.d("FirebaseStorage", "Image download URL: " + imageUrl);
+                        // 여기서 imageUrl을 사용하여 추가적인 작업을 수행할 수 있습니다.
+                        // cody class에 넣어야지 // 그리고 그 cody class의 uri를 user에 넣고
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("FirebaseStorage", "Failed to get download URL", e);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // 이미지 업로드 실패
+                Log.e("FirebaseStorage", "Failed to upload image", e);
+            }
+        });
         return file;
     }
 
@@ -541,7 +591,7 @@ public class ChatActivity extends AppCompatActivity {
                 chat.state = Chat.STATE_COMPLETE_IMAGE;
                 if (response.isSuccessful() && response.body() != null){
                     String base = response.body().images.get(0).split(",", 1)[0];
-                    byte[] bytes = StringToBitmap(base);
+                    byte[] bytes = StringToByte(base);
                     chat.imagePath = saveCache(bytes);
                     handler.post(new Runnable() {
                         @Override
@@ -606,19 +656,19 @@ public class ChatActivity extends AppCompatActivity {
 
     class Chat{
 
-        public static final int STATE_LOAD_TEXT = 1;
-        public static final int STATE_COMPLETE_TEXT = 2;
-        public static final int STATE_LOAD_IMAGE = 3;
-        public static final int STATE_COMPLETE_IMAGE = 4;
-        public static final int STATE_ERROR = 5;
+        public static final int STATE_LOAD_TEXT = 1; // 유저가 텍스트를 넣었을 때, 로드 중
+        public static final int STATE_COMPLETE_TEXT = 2; // 로드가 완료되어서 채팅 또는 코디 텍스트가 만들어졌을 때
+        public static final int STATE_LOAD_IMAGE = 3; //
+        public static final int STATE_COMPLETE_IMAGE = 4; // 이미지가 완성되었을 때
+        public static final int STATE_ERROR = 5; // 에러 발생 시
 
         String text;
-        String userText;
+        String userText; // 코디 재생성 시, 유저의 문장들을 재사용
         boolean isGPT;
         int state = STATE_LOAD_TEXT;
         String prompt = "";
         File imagePath;
-        int remakeCount = 0;
+        int remakeCount = 0; // 재생성 횟수 또는 한도
         GptCallback gptCallback;
         ChatListAdopter.ViewHolder holder;
 

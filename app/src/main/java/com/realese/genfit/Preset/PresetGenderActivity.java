@@ -25,6 +25,7 @@ public class PresetGenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PresetActivity.class);
+                intent.putExtra("sex", "male");
                 startActivity(intent);
                 finish();
             }
@@ -34,6 +35,7 @@ public class PresetGenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PresetActivity.class);
+                intent.putExtra("sex", "female");
                 startActivity(intent);
                 finish();
             }

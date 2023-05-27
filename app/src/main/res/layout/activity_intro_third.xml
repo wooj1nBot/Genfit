@@ -31,12 +31,14 @@
         android:text="사용자들의 다양한\n패션 취향을 알아볼까요?"
         android:textSize="18dp" />
 
-    <View
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/intro_thd_gif"
         android:layout_width="240dp"
         android:layout_height="240dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/intro_image3" />
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="review.json"
+        app:lottie_loop="true" />
 
     <ImageView
         android:id="@+id/intro_thd_next_page1"

@@ -16,7 +16,9 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Genfit"
         tools:targetApi="31">
-
+        <activity
+            android:name=".Intro.IntroFirst_Activity"
+            android:exported="false"/>
         <activity
             android:name=".Intro.IntroSecond_Activity"
             android:exported="false" />
@@ -40,11 +42,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".Intro.IntroFirst_Activity"
-            android:exported="false">
         </activity>
     </application>
 

@@ -28,6 +28,7 @@ public class IntroThird_Activity extends AppCompatActivity {
                 editor.apply();
                 startActivity(new Intent(getApplicationContext(), PresetGenderActivity.class));
                 finish();
+                overridePendingTransition(R.anim.horizon_enter, R.anim.none);
             }
         });
     }
