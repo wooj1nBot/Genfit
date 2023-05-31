@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.realese.genfit.R;
+import com.realese.genfit.items.User;
+import com.realese.genfit.items.Util;
 
 public class PresetGenderActivity extends AppCompatActivity {
 
@@ -25,7 +27,7 @@ public class PresetGenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PresetActivity.class);
-                intent.putExtra("sex", "male");
+                intent.putExtra("sex", User.SEX_MALE);
                 startActivity(intent);
                 finish();
             }
@@ -35,7 +37,7 @@ public class PresetGenderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PresetActivity.class);
-                intent.putExtra("sex", "female");
+                intent.putExtra("sex", User.SEX_FEMALE);
                 startActivity(intent);
                 finish();
             }

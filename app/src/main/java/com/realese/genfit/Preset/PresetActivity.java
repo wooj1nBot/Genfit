@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.realese.genfit.Frags.FragMain;
+import com.realese.genfit.Frags.MainActivity;
 import com.realese.genfit.R;
 import com.realese.genfit.items.User;
-import com.realese.genfit.items.UserSingleton;
+import com.realese.genfit.items.Util;
 
 public class PresetActivity extends AppCompatActivity {
 
@@ -30,7 +30,7 @@ public class PresetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_preset);
 
         Intent i = getIntent();
-        String sex = i.getStringExtra("sex");
+        int sex = i.getIntExtra("sex", User.SEX_MALE);
 
         back_btn = findViewById(R.id.bback);
         height = findViewById(R.id.ki_input);
@@ -56,14 +56,12 @@ public class PresetActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), " 빈 칸을 채워주세요.", Toast.LENGTH_LONG).show();
                 else {
                     // Context context, int height, int weight, int age
-                    User user = UserSingleton.getInstance(getApplicationContext(),
-                            Integer.parseInt(String.valueOf(height.getText())),
-                            Integer.parseInt(String.valueOf(weight.getText())),
-                            Integer.parseInt(String.valueOf(age.getText())),
-                            sex);
+                    int h = Integer.parseInt(height.getText().toString());
+                    int w = Integer.parseInt(weight.getText().toString());
+                    int a = Integer.parseInt(age.getText().toString());
 
-
-                    Intent intent = new Intent(getApplicationContext(), FragMain.class);
+                    Util.enrollLoginUser(PresetActivity.this, sex, h, w, a);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -72,11 +70,8 @@ public class PresetActivity extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = UserSingleton.getInstance(getApplicationContext(), sex);
-
-                user.uploadUserToFirestore();
-
-                Intent intent = new Intent(getApplicationContext(), FragMain.class);
+                Util.enrollLoginUser(PresetActivity.this, sex);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
             }

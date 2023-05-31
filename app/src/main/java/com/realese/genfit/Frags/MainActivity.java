@@ -6,24 +6,29 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.realese.genfit.Chat.ChatActivity;
 import com.realese.genfit.Intro.IntroFirst_Activity;
+import com.realese.genfit.Preset.PresetGenderActivity;
 import com.realese.genfit.R;
+import com.realese.genfit.items.Util;
 
-public class FragMain extends AppCompatActivity {
-    LinearLayout bottomNavigationItemView_HOME;
-    LinearLayout bottomNavigationItemView_MyPage;
-    ImageView chat_btn;
+public class MainActivity extends AppCompatActivity {
+
 
     private final String TAG = "메인";
 
     Fragment fragment_home;
     Fragment fragment_mypage;
+
+    public MainActivity(){
+
+    }
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +40,28 @@ public class FragMain extends AppCompatActivity {
             Intent intent = new Intent(this, IntroFirst_Activity.class);
             startActivity(intent);
             finish();
+            return;
+        }
+        if (Util.getID(this).equals("")){
+            Intent intent = new Intent(this, IntroFirst_Activity.class);
+            startActivity(intent);
+            finish();
         }
 
         setContentView(R.layout.bottom_menu);
 
-        fragment_home = new FragHome();
+        RelativeLayout bottombar = findViewById(R.id.bar);
+
+        fragment_home = new FragHome(bottombar);
         fragment_mypage = new FragMyPageMain();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.main_layout, fragment_home).commitAllowingStateLoss();
 
-        chat_btn = findViewById(R.id.chat_btn);
-        bottomNavigationItemView_HOME = findViewById(R.id.home_btn);
-        bottomNavigationItemView_MyPage = findViewById(R.id.my_page_btn);
+        FloatingActionButton chat_btn = findViewById(R.id.chat);
+        ImageView home = findViewById(R.id.home);
+        ImageView profile = findViewById(R.id.profile);
 
-        bottomNavigationItemView_HOME.setOnClickListener(new View.OnClickListener() {
+        home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "바텀 네비게이션 홈 클릭");
@@ -60,10 +73,10 @@ public class FragMain extends AppCompatActivity {
         chat_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ChatActivity.class));
+                startActivity(new Intent(MainActivity.this, ChatActivity.class));
             }
         });
-        bottomNavigationItemView_MyPage.setOnClickListener(new View.OnClickListener() {
+        profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "바텀 네비게이션 마이메뉴 클릭");

@@ -71,6 +71,7 @@
                     android:lineSpacingExtra="4sp"
                     android:maxWidth="300dp"
                     android:padding="15dp"
+                    android:bufferType="spannable"
                     android:textColor="#505050"
                     android:textSize="16dp"
                     android:visibility="visible" />
@@ -105,6 +106,7 @@
                         app:lottie_autoPlay="false"
                         app:lottie_fileName="loading.json"
                         app:lottie_loop="true"></com.airbnb.lottie.LottieAnimationView>
+
                 </RelativeLayout>
 
                 <com.google.android.material.card.MaterialCardView
@@ -120,7 +122,9 @@
                     android:foreground="?android:attr/selectableItemBackground"
                     android:visibility="visible"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:strokeColor="#6E6E6E"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#ACACAC"
                     app:strokeWidth="0.4dp">
 
 
@@ -165,15 +169,33 @@
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp">
 
-                    <ImageView
-                        android:id="@+id/iv_opponent"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:minWidth="100dp"
-                        android:visibility="visible" />
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/iv_opponent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:clickable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:minWidth="100dp"
+                            android:visibility="visible" />
+
+                        <ImageView
+                            android:id="@+id/fav"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:clickable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:padding="14dp"
+                            app:srcCompat="@drawable/autorenew"
+                            app:tint="#ffffff"
+                           />
+
+                    </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
@@ -188,7 +210,7 @@
                     android:fontFamily="@font/pd_regu"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:padding="15dp"
-                    android:text="코디 다시 생성하기"
+                    android:text="피드에 올리기"
                     android:textColor="#1C549C"
                     android:textSize="13sp"
                     android:visibility="visible" />

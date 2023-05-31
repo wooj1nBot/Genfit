@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.realese.genfit.Preset.PresetGenderActivity;
 import com.realese.genfit.R;
+import com.realese.genfit.items.Util;
 
 public class IntroFirst_Activity extends AppCompatActivity {
 
