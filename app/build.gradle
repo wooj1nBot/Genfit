@@ -6,6 +6,7 @@ plugins {
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 def OPENAI_API_KEY = localProperties.getProperty('openai_api_key')
+def SD_API_ENDPOINT = localProperties.getProperty('sd_api_url')
 
 android {
     namespace 'com.realese.genfit'
@@ -29,10 +30,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "OPENAI_API_KEY ", localProperties['openai_api_key']
+            buildConfigField "String", "OPENAI_API_KEY", localProperties['openai_api_key']
+            buildConfigField "String", "SD_API_ENDPOINT", localProperties['sd_api_url']
         }
         debug{
-            buildConfigField "String", "OPENAI_API_KEY ", localProperties['openai_api_key']
+            buildConfigField "String", "OPENAI_API_KEY", localProperties['openai_api_key']
+            buildConfigField "String", "SD_API_ENDPOINT", localProperties['sd_api_url']
         }
     }
     compileOptions {

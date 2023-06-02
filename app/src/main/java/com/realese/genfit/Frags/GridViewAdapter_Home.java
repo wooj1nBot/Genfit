@@ -103,19 +103,14 @@ public class GridViewAdapter_Home extends RecyclerView.Adapter<GridViewAdapter_H
         if (item.tags.equals("")){
             holder.textView_tagging.setText("");
         }else{
-            String tag = item.tags.replace("\"", "").replace(" ", "");
-            String[] tags = tag.split(",");
-            StringBuilder complete = new StringBuilder();
-            ArrayList<Integer> pos = new ArrayList<>();
-            for (int i = tags.length-1; i > 0; i--) {
-                pos.add(complete.length() + 2);
-                complete.append("  #  ").append(tags[i]);
-            }
-            holder.textView_tagging.setText(complete.toString());
+            String tag = item.tags.replace("\n", "");
+            holder.textView_tagging.setText(tag);
             Spannable spannable = (Spannable) holder.textView_tagging.getText();
-            for (int p : pos){
-                spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), p, p+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                spannable.setSpan(new RelativeSizeSpan(1.1f), p, p+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            for (int i = 0; i < tag.length(); i++) {
+                if (tag.charAt(i) == '#'){
+                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), i, i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new RelativeSizeSpan(1.15f), i, i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
 
@@ -230,21 +225,16 @@ public class GridViewAdapter_Home extends RecyclerView.Adapter<GridViewAdapter_H
                 if (task.isSuccessful() && task.getResult().exists()){
                     Cody c = task.getResult().toObject(Cody.class);
                     Glide.with(context).load(Uri.parse(c.imageURI)).into(imageView);
-
+                    Log.d("gpttag", c.tags);
                     if (!c.tags.equals("")) {
-                        String tag = c.tags.replace("\"", "").replace(" ", "");
-                        String[] tags = tag.split(",");
-                        StringBuilder complete = new StringBuilder();
-                        ArrayList<Integer> pos = new ArrayList<>();
-                        for (int i = tags.length - 1; i > 0; i--) {
-                            pos.add(complete.length() + 2);
-                            complete.append("  #  ").append(tags[i]);
-                        }
-                        tv_tag.setText(complete.toString());
+                        String tag = c.tags.replace("\n", "");
+                        tv_tag.setText(tag);
                         Spannable spannable = (Spannable) tv_tag.getText();
-                        for (int p : pos) {
-                            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), p, p + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            spannable.setSpan(new RelativeSizeSpan(1.15f), p, p + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        for (int i = 0; i < tag.length(); i++) {
+                           if (tag.charAt(i) == '#'){
+                               spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), i, i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                               spannable.setSpan(new RelativeSizeSpan(1.15f), i, i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                           }
                         }
                     }
                     if (likes.contains(cody.docId)){

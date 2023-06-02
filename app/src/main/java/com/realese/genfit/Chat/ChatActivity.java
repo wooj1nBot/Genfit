@@ -48,6 +48,7 @@ import com.bumptech.glide.request.target.Target;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.realese.genfit.BuildConfig;
 import com.realese.genfit.Frags.MainActivity;
@@ -70,11 +71,19 @@ import com.theokanning.openai.service.OpenAiService;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Spliterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -92,7 +101,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class ChatActivity extends AppCompatActivity {
 
     String OPEN_AI_KEY = BuildConfig.OPENAI_API_KEY;
-
+    String SD_API_ENDPOINT = BuildConfig.SD_API_ENDPOINT;
 
     ImageView back;
     RecyclerView rc;
@@ -101,14 +110,16 @@ public class ChatActivity extends AppCompatActivity {
     private Handler handler;
 
     EditText editText;
+    FloatingActionButton fb_tag;
+    private static final int FB_ON_COLLAPSE = 0;
+    private static final int FB_ON_EXPAND = 1;
+    private static final int FB_OFF = 2;
 
     private long pressedTime;
 
-    boolean isInit = true;
-
     User user;
 
-    List<ChatMessage> messages;
+    ChatMessage lastChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +127,9 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         back = findViewById(R.id.back);
         rc = findViewById(R.id.rc);
+        fb_tag = findViewById(R.id.tag);
         chats = new ArrayList<>();
-        messages = new ArrayList<>();
+
 
         Chat gptChat = new Chat("", true);
         gptChat.state = Chat.STATE_COMPLETE_TEXT;
@@ -130,6 +142,25 @@ public class ChatActivity extends AppCompatActivity {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rc.setLayoutManager(linearLayoutManager);
         rc.setAdapter(adopter);
+
+        fb_tag.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#283593")));
+        fb_tag.setTag(FB_ON_COLLAPSE);
+
+        fb_tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((int) v.getTag() == FB_ON_COLLAPSE){
+
+                }
+                if ((int) v.getTag() == FB_ON_EXPAND){
+
+                }
+                if ((int) v.getTag() == FB_OFF){
+
+                }
+
+            }
+        });
 
 
 
@@ -149,7 +180,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String message = editText.getText().toString();
                 if(!message.equals("")) {
-                    send(message, null, isInit);
+                    send(message);
                     editText.setText("");
                 }
             }
@@ -206,71 +237,101 @@ public class ChatActivity extends AppCompatActivity {
         return b.toString();
     }
 
-    public String txtToPrompt(List<String> tags, String text){
+    public String txtToPrompt(List<String> tags, String text, boolean isFirst){
         String tagStr = tagToString(tags);
-
-        return "지금부터 당신은 가장 좋은 옷 한 세트만 추천해주는 전문 패션 코디네이터입니다.\n" +
-                "키워드인 \"" + tagStr +"\"와 \"" + text +"\" 라는 텍스트를 참고하여 상의, 하의, 신발, 액세서리 등을 1개씩 디테일하게 색깔과 이름이 포함된 키워드 형태로 추천해주세요." +
-                "그리고 마지막에는 그 옷을 왜 골랐는지 무조건 존댓말로 필요한 말만 설명해 주세요." +
+        if (isFirst)
+            return "지금부터 당신은 사용자의 요구를 최대한 맞춰 가장 좋은 옷 한 세트만 추천해주는 전문 패션 코디네이터입니다.\n" +
+                "키워드인 \"" + tagStr +"\"와 \"" + text +"\" 라는 텍스트를 보고 코디를 하여 상의, 하의, 신발, 액세서리로 구분해서 1개씩 색깔과 이름이 포함된 제품의 이름으로 추천해주세요." +
+                "그리고 마지막에는 그 옷을 왜 골랐는지 고객이 기분 나쁘지 않게 무조건 존댓말로 이유를 간결하게 설명해주세요." +
                 "\n" +
-                "예를 들어,\n" +
+                "무조건\n" +
                 "\n" +
                 "상의: 색깔 상의 이름\n" +
                 "하의: 색깔 하의 이름\n" +
                 "신발: 색깔 신발 이름\n" +
                 "액세서리: 색깔 액세서리 이름\n" +
                 "\n" +
-                "로 추천해줄 수 있습니다.";
+                "의 형식으로 따옴표 없이 추천해주세요. 만약 옷을 고르지 못했다면 \"없음\"이라고 해주세요";
+
+        else
+            return "지금부터 당신은 사용자의 요구를 최대한 맞춰 가장 좋은 옷 한 세트만 추천해주는 전문 패션 코디네이터입니다.\n" +
+                 "키워드인 \"" + tagStr +"\"를 이용해서" + "상의, 하의, 신발, 액세서리로 구분해서 1개씩 디테일하게 색깔과 이름이 포함된 키워드 형태로 추천해주세요." +
+                "그리고 마지막에는 그 옷을 왜 골랐는지 고객이 기분 나쁘지 않게 무조건 존댓말로 이유를 간결하게 설명해주세요." +
+                    "\n" +
+                    "무조건\n" +
+                    "\n" +
+                    "상의: 색깔 상의 이름\n" +
+                    "하의: 색깔 하의 이름\n" +
+                    "신발: 색깔 신발 이름\n" +
+                    "액세서리: 색깔 액세서리 이름\n" +
+                    "\n" +
+                    "의 형식으로 따옴표 없이 추천해주세요";
+
     }
 
-    public void send(String text, Chat lastChat, boolean isInit) {
+    public String height_simplify(int num){
+        Log.d("height", String.valueOf(num));
+        return (int) Math.floor((double) (num / 10f)) * 10 +"cm "+((num%10)>=3?((num%10)>=7)?"후반":"중반":"초반");
+    }
+
+    public String weight_simplify(int num){
+        Log.d("height", String.valueOf(num));
+        return (int) Math.floor((double) (num / 10f)) * 10 +"kg "+((num%10)>=3?((num%10)>=7)?"후반":"중반":"초반");
+    }
+
+    public String age_simplify(int num){
+        Log.d("height", String.valueOf(num));
+        Log.d("age",String.valueOf(num));
+        return (int) Math.floor((double) (num / 10f)) * 10 +"세 "+((num%10)>=3?((num%10)>=7)?"후반":"중반":"초반");
+    }
+
+
+    public void send(String text) {
         // gpt한테 보내는 함수
 
 
 
 
         Chat gptChat;
-        if (lastChat == null) {
-            Chat userChat = new Chat(text, false);
-            chats.add(userChat);
+        Chat userChat = new Chat(text, false);
+        chats.add(userChat);
 
-            gptChat = new Chat("", true);
-            gptChat.state = Chat.STATE_LOAD_TEXT;
-            gptChat.userText = text;
+        gptChat = new Chat("", true);
+        gptChat.state = Chat.STATE_LOAD_TEXT;
+        gptChat.userText = text;
 
-            chats.add(gptChat);
+        chats.add(gptChat);
 
-            adopter.notifyDataSetChanged();
+        adopter.notifyDataSetChanged();
 
-            rc.post(new Runnable() {
-                @Override
-                public void run() {
-                    // Call smooth scroll
-                    rc.smoothScrollToPosition(getPos(gptChat));
-                }
-            });
-
-            if (isInit){
-                List<String> tags = new ArrayList<>();
-                if (user.age != 0){
-                    tags.add(user.height + "cm");
-                    tags.add(user.weight + "kg");
-                    tags.add(user.age + "세");
-                }
-                tags.add(User.SEX_STRING[user.sex]);
-                text = txtToPrompt(tags, text);
+        rc.post(new Runnable() {
+            @Override
+            public void run() {
+                // Call smooth scroll
+                rc.smoothScrollToPosition(getPos(gptChat));
             }
+        });
 
-        }else{
-            if (lastChat.holder != null) {
-                lastChat.holder.tv_op.setVisibility(View.GONE);
-                lastChat.holder.showLoad("코디 생성 중...");
+        List<ChatMessage> messages = new ArrayList<>();
+
+        int state = (int) fb_tag.getTag();
+
+        if (state != FB_OFF){
+            List<String> tags = new ArrayList<>();
+            if (user.age != 0){
+                tags.add(height_simplify(user.height));
+                tags.add(weight_simplify(user.weight));
+                tags.add(age_simplify(user.age));
             }
+            tags.add(User.SEX_STRING[user.sex]);
 
-            lastChat.state = Chat.STATE_LOAD_TEXT;
-            lastChat.text = "";
-            lastChat.prompt = "";
-            gptChat = lastChat;
+            if (lastChat == null) {
+                text = txtToPrompt(tags, text, true);
+                Log.d("TXTX", text);
+            }else{
+                String t = txtToPrompt(tags, "", false);
+                messages.add(new ChatMessage(ChatMessageRole.USER.value(), t));
+            }
         }
 
 
@@ -294,21 +355,29 @@ public class ChatActivity extends AppCompatActivity {
 
         ChatMessage chatMessage = new ChatMessage(ChatMessageRole.USER.value(), text);
 
-        if (lastChat == null) {
-            messages.add(chatMessage);
-        }else{
-            messages.remove(messages.size()-1);
-            messages.add(chatMessage);
+
+
+        if (lastChat != null){
+            messages.add(lastChat);
         }
+
+        messages.add(chatMessage);
+
+        Log.d("esdw", messages.toString());
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .messages(messages)
                 .stream(true)
+                .temperature(0.8)
+                .topP(1.0)
+                .presencePenalty(0.5)
                 .n(1)
                 .maxTokens(2048)
                 .model("gpt-3.5-turbo")
                 .logitBias(new HashMap<>())
                 .build();
+
+
 
         service.streamChatCompletion(request).subscribeOn(Schedulers.io()).subscribe(chunk -> {
             ChatCompletionChoice choice = chunk.getChoices().get(0);
@@ -345,15 +414,6 @@ public class ChatActivity extends AppCompatActivity {
                         holder.tv_feed.setVisibility(View.GONE);
                         holder.tv_op.setVisibility(View.VISIBLE);
                         holder.hideLoad();
-
-                        rc.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Call smooth scroll
-                                rc.smoothScrollToPosition(adopter.getItemCount()-1);
-                            }
-                        });
-                        ChatActivity.this.isInit = false;
                     }
                 });
             }
@@ -361,6 +421,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             void onComplete() {
                 gptChat.state = Chat.STATE_COMPLETE_TEXT;
+                lastChat = new ChatMessage(ChatMessageRole.ASSISTANT.value(), gptChat.text);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -375,7 +436,8 @@ public class ChatActivity extends AppCompatActivity {
                                 spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), p, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new StyleSpan(Typeface.BOLD), p, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new UnderlineSpan(), p, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                gptChat.clothes.put("0", gptChat.text.substring(p+3, n+1));
+                                gptChat.clothes.put("0", gptChat.text.substring(p+3, n+1).trim().replace("\"", ""));
+                                gptChat.user_tag += "#" + gptChat.clothes.get("0") + " ";
                             }
                         }
 
@@ -387,7 +449,8 @@ public class ChatActivity extends AppCompatActivity {
                                 spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), p2, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new StyleSpan(Typeface.BOLD), p2, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new UnderlineSpan(), p2, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                gptChat.clothes.put("1", gptChat.text.substring(p2+3, n+1));
+                                gptChat.clothes.put("1", gptChat.text.substring(p2+3, n+1).trim().replace("\"", ""));
+                                gptChat.user_tag +=  "#" + gptChat.clothes.get("1") + " ";
                             }
                         }
                         int p3 = gptChat.text.indexOf("신발:");
@@ -398,7 +461,8 @@ public class ChatActivity extends AppCompatActivity {
                                 spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), p3, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new StyleSpan(Typeface.BOLD), p3, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new UnderlineSpan(), p3, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                gptChat.clothes.put("2", gptChat.text.substring(p3+3, n+1));
+                                gptChat.clothes.put("2", gptChat.text.substring(p3+3, n+1).trim().replace("\"", ""));
+                                gptChat.user_tag +=  "#" + gptChat.clothes.get("2") + " ";
                             }
                         }
                         int p4 = gptChat.text.indexOf("액세서리:");
@@ -409,22 +473,14 @@ public class ChatActivity extends AppCompatActivity {
                                 spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#2E2E2E")), p4, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new StyleSpan(Typeface.BOLD), p4, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                                 spannable.setSpan(new UnderlineSpan(), p4, n, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                gptChat.clothes.put("3", gptChat.text.substring(p4+5, n+1));
+                                gptChat.clothes.put("3", gptChat.text.substring(p4+5, n+1).trim().replace("\"", ""));
+                                gptChat.user_tag +=  "#" + gptChat.clothes.get("3") + " ";
                             }
-                        }
-
-
-                        ChatMessage chatMessage = new ChatMessage(ChatMessageRole.ASSISTANT.value(), gptChat.text);
-                        messages.add(chatMessage);
-
-                        if (messages.size() >= 10){
-                            messages.clear();
-                            ChatActivity.this.isInit = false;
                         }
 
                         editText.setEnabled(true);
 
-                        if (hasAndKey(gptChat.text, "상의", "하의")){
+                        if (hasAndKey(gptChat.text, "상의")){
                             gptChat.isRecommend = true;
                             gptChat.holder.change.setTag(gptChat);
                             gptChat.holder.tv_feed.setVisibility(View.GONE);
@@ -440,8 +496,6 @@ public class ChatActivity extends AppCompatActivity {
                             });
                         }else{
                             gptChat.isRecommend = false;
-                            messages.clear();
-                            ChatActivity.this.isInit = true;
                         }
 
 
@@ -518,8 +572,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-        String p = "Translate the resulting outfit into an \"English command\" consisting of words and commas. " +
-                "For example, you could structure your command as \"keyword1, keyword2, keyword3\".";
+        String p = "Translate the resulting outfit into an \"English command\" consisting of only words and commas. " +
+                "For example, you could structure your command as " +
+                "\"Stylish summer outfit with a button-front midi skirt, a sleeveless blouse, and espadrille flats, completed with a leather belt and a delicate choker necklace.\".";
 
         ObjectMapper mapper = defaultObjectMapper();
         OkHttpClient client = defaultClient(OPEN_AI_KEY, Duration.ofSeconds(500))
@@ -550,6 +605,7 @@ public class ChatActivity extends AppCompatActivity {
                 .messages(messages)
                 .stream(false)
                 .n(1)
+                .temperature(0.5)
                 .maxTokens(2048)
                 .model("gpt-3.5-turbo")
                 .logitBias(new HashMap<>())
@@ -563,6 +619,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             void onComplete() {
+                Log.d("def1", chat.prompt);
                 promptToImage(chat);
             }
 
@@ -620,14 +677,17 @@ public class ChatActivity extends AppCompatActivity {
         OpenAiApi api = retrofit.create(OpenAiApi.class);
         OpenAiService service = new OpenAiService(api, client.dispatcher().executorService());
 
-        final ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(), "지금까지 나눈 코디 대화를 키워드와 쉼표로 구분된 명령어로만 정리해줘. " +
-                "예를 들면, 명령어를 이렇게 만들 수 있어. \"키워드1, 키워드2, 키워드3, 키워드4\"");
-        List<ChatMessage> list = new ArrayList<>(messages);
+        final ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(),
+                "Based on the previous content, make Korean hashtag text with adjectives and nouns that represent mood among words excluding color elements and clothing names, separated by '#'.\n" +
+                        "For example, \"#keyword1 #keyword2 #keyword3\"");
+        List<ChatMessage> list = new ArrayList<>();
+        list.add(new ChatMessage(ChatMessageRole.ASSISTANT.value(), chat.text));
         list.add(message);
 
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .messages(list)
                 .stream(false)
+                .temperature(0.5)
                 .n(1)
                 .maxTokens(2048)
                 .model("gpt-3.5-turbo")
@@ -637,7 +697,7 @@ public class ChatActivity extends AppCompatActivity {
         GptCallback gptCallback = new GptCallback() {
             @Override
             void onReceived(ChatMessage message) {
-                chat.user_tag += message.getContent();
+                chat.user_tag += message.getContent().replace("\"", "");
             }
 
             @Override
@@ -710,7 +770,7 @@ public class ChatActivity extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
-                .baseUrl("https://f5a4-168-188-128-132.ngrok-free.app/")
+                .baseUrl(SD_API_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
@@ -757,15 +817,6 @@ public class ChatActivity extends AppCompatActivity {
                                         startActivity(intent);
                                     }
                                 });
-
-
-
-                                chat.holder.imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                                    @Override
-                                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                                        rc.smoothScrollToPosition(getPos(chat));
-                                    }
-                                });
                                 Glide.with(ChatActivity.this).load(chat.cody.imageURI).addListener(new RequestListener<Drawable>() {
                                     @Override
                                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -780,6 +831,19 @@ public class ChatActivity extends AppCompatActivity {
                             }
                         }
                     });
+                }else{
+                    Toast.makeText(ChatActivity.this, "이미지 생성에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    chat.state = Chat.STATE_COMPLETE_TEXT;
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (chat.holder != null) {
+                                chat.holder.tv_feed.setVisibility(View.VISIBLE);
+                                chat.holder.hideLoad();
+                            }
+                        }
+                    });
+
                 }
 
                 handler.post(new Runnable() {
@@ -795,7 +859,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Response> call, Throwable t) {
                 Toast.makeText(ChatActivity.this, "이미지 생성에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                chat.state = Chat.STATE_COMPLETE_IMAGE;
+                chat.state = Chat.STATE_COMPLETE_TEXT;
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -916,20 +980,19 @@ public class ChatActivity extends AppCompatActivity {
 
                   chat.holder = holder;
 
-                  if (chat.state == Chat.STATE_LOAD_TEXT || chat.state == Chat.STATE_LOAD_IMAGE){
+                  if (chat.state == Chat.STATE_LOAD_TEXT) {
                       holder.tv_op.setVisibility(View.GONE);
+                      holder.showLoad("코디 생성 중...");
 
-                      if (chat.state == Chat.STATE_LOAD_IMAGE){
-                          holder.showLoad("착용샷 생성 중...");
-                      }else{
-                          holder.showLoad("코디 생성 중...");
-                      }
-                  }
-                  else if (chat.state == Chat.STATE_ERROR) {
+                  } else if (chat.state == Chat.STATE_LOAD_IMAGE) {
+                      holder.showLoad("착용샷 생성 중...");
+                      holder.tv_op.setVisibility(View.VISIBLE);
+                      holder.tv_op.setText(chat.text);
+
+                  } else if (chat.state == Chat.STATE_ERROR) {
                       holder.tv_op.setText("죄송합니다. 오류가 발생했습니다.");
                       holder.tv_op.setVisibility(View.VISIBLE);
                       holder.hideLoad();
-
                   }
                   else if (chat.state == Chat.STATE_COMPLETE_TEXT){
 
@@ -950,6 +1013,7 @@ public class ChatActivity extends AppCompatActivity {
                                   outFitToPrompt(c);
                               }
                           });
+
                       }
                   }else if (chat.state == Chat.STATE_COMPLETE_IMAGE){
 
@@ -1061,6 +1125,44 @@ public class ChatActivity extends AppCompatActivity {
                 tv_load.setVisibility(View.GONE);
                 loadView.cancelAnimation();
             }
+        }
+
+
+    }
+
+
+
+
+
+    public class MessageQueue {
+
+        LinkedList<ChatMessage> messages;
+
+        public MessageQueue(){
+            messages = new LinkedList<>();
+        }
+
+        public void add(ChatMessage message){
+            messages.add(message);
+            while (check()){
+                messages.poll();
+            }
+        }
+
+        public ChatMessage getLast(){
+            return messages.getLast();
+        }
+
+        public List<ChatMessage> toList(){
+            return messages;
+        }
+
+        public boolean check(){
+            int count = 0;
+            for(ChatMessage message : messages){
+                count += message.getContent().length();
+            }
+            return count > 4096;
         }
 
 

@@ -53,14 +53,14 @@ public class FragMyPageFavorite extends Fragment {
 
         adapter_myPage = new GridViewAdapter_MyPage(getContext(), itemList, likes);
         rc.setAdapter(adapter_myPage);
-
+        getUserData();
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getUserData();
+
     }
 
 
