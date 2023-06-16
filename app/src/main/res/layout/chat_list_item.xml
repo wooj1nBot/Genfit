@@ -181,7 +181,8 @@
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"
                             android:minWidth="100dp"
-                            android:visibility="visible" />
+                            android:visibility="visible"
+                            app:srcCompat="@drawable/basic_img" />
 
                         <ImageView
                             android:id="@+id/fav"
@@ -198,6 +199,43 @@
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/sd_load"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="vertical">
+
+                    <com.jaygoo.widget.RangeSeekBar
+                        android:id="@+id/seekbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:paddingStart="13dp"
+                        android:paddingEnd="13dp"
+                        app:rsb_gravity="center"
+                        app:rsb_mode="single"
+                        app:rsb_progress_drawable="@drawable/progress_fill"
+                        app:rsb_progress_drawable_default="@drawable/progess"
+                        app:rsb_progress_height="10dp"
+                        app:rsb_thumb_height="0dp"
+                        app:rsb_thumb_width="0dp" />
+
+                    <TextView
+                        android:id="@+id/tv_sd_load"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/pd_medium"
+                        android:gravity="center_horizontal"
+                        android:text="20%"
+                        android:textColor="#222222"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/remake"

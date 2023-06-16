@@ -39,7 +39,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         Glide.with(this).load(uri).into(photoView);
 
-        if (!t.equals("")) {
+        if (t != null && !t.equals("")) {
             String tag = t.replace("\"", "").replace(" ", "");
             String[] tags = tag.split(",");
             StringBuilder complete = new StringBuilder();

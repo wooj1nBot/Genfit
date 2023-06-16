@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -35,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +53,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.jaygoo.widget.RangeSeekBar;
 import com.realese.genfit.BuildConfig;
 import com.realese.genfit.Frags.MainActivity;
 import com.realese.genfit.GalleryActivity;
@@ -363,8 +372,6 @@ public class ChatActivity extends AppCompatActivity {
 
         messages.add(chatMessage);
 
-        Log.d("esdw", messages.toString());
-
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .messages(messages)
                 .stream(true)
@@ -490,8 +497,7 @@ public class ChatActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     v.setVisibility(View.GONE);
                                     Chat c = (Chat) v.getTag();
-                                    outFitToPrompt(c);
-                                    txtToTag(c);
+                                    promptToImage(c);
                                 }
                             });
                         }else{
@@ -562,289 +568,55 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    public void outFitToPrompt(Chat chat){
 
-        if (chat.holder != null) {
-            chat.holder.showLoad("이미지 생성 중...");
-            chat.state = Chat.STATE_LOAD_IMAGE;
-        }
-
-
-
-
-        String p = "Translate the resulting outfit into an \"English command\" consisting of only words and commas. " +
-                "For example, you could structure your command as " +
-                "\"Stylish summer outfit with a button-front midi skirt, a sleeveless blouse, and espadrille flats, completed with a leather belt and a delicate choker necklace.\".";
-
-        ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultClient(OPEN_AI_KEY, Duration.ofSeconds(500))
-                .newBuilder()
-                .build();
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.openai.com/")
-                .client(client)
-                .addConverterFactory(JacksonConverterFactory.create(mapper))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .callbackExecutor(Executors.newSingleThreadExecutor())
-                .build();
-
-        OpenAiApi api = retrofit.create(OpenAiApi.class);
-        OpenAiService service = new OpenAiService(api, client.dispatcher().executorService());
-
-        final List<ChatMessage> messages = new ArrayList<>();
-
-        final ChatMessage chatMessage1 = new ChatMessage(ChatMessageRole.ASSISTANT.value(), chat.text);
-        final ChatMessage chatMessage2 = new ChatMessage(ChatMessageRole.USER.value(), p);
-
-        messages.add(chatMessage1);
-        messages.add(chatMessage2);
-
-        ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .messages(messages)
-                .stream(false)
-                .n(1)
-                .temperature(0.5)
-                .maxTokens(2048)
-                .model("gpt-3.5-turbo")
-                .logitBias(new HashMap<>())
-                .build();
-
-        GptCallback gptCallback = new GptCallback() {
-            @Override
-            void onReceived(ChatMessage message) {
-                chat.prompt += message.getContent();
-            }
-
-            @Override
-            void onComplete() {
-                Log.d("def1", chat.prompt);
-                promptToImage(chat);
-            }
-
-            @Override
-            void onFail() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        chat.holder.hideLoad();
-                        chat.holder.change.setVisibility(View.VISIBLE);
-                    }
-                });
-
-            }
-
-        };
-
-
-        service.streamChatCompletion(request).subscribeOn(Schedulers.io()).subscribe(chunk -> {
-            ChatCompletionChoice choice = chunk.getChoices().get(0);
-            if (choice.getFinishReason() != null) {
-                gptCallback.onComplete();
-                return;
-            }
-            ChatMessage message = choice.getMessage();
-            if (message.getContent() != null) {
-                gptCallback.onReceived(message);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                gptCallback.onFail();
-            }
-        });
-
-
-
-    }
-
-    public void txtToTag(Chat chat){
-
-        ObjectMapper mapper = defaultObjectMapper();
-        OkHttpClient client = defaultClient(OPEN_AI_KEY, Duration.ofSeconds(500))
-                .newBuilder()
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.openai.com/")
-                .client(client)
-                .addConverterFactory(JacksonConverterFactory.create(mapper))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .callbackExecutor(Executors.newSingleThreadExecutor())
-                .build();
-
-        OpenAiApi api = retrofit.create(OpenAiApi.class);
-        OpenAiService service = new OpenAiService(api, client.dispatcher().executorService());
-
-        final ChatMessage message = new ChatMessage(ChatMessageRole.USER.value(),
-                "Based on the previous content, make Korean hashtag text with adjectives and nouns that represent mood among words excluding color elements and clothing names, separated by '#'.\n" +
-                        "For example, \"#keyword1 #keyword2 #keyword3\"");
-        List<ChatMessage> list = new ArrayList<>();
-        list.add(new ChatMessage(ChatMessageRole.ASSISTANT.value(), chat.text));
-        list.add(message);
-
-        ChatCompletionRequest request = ChatCompletionRequest.builder()
-                .messages(list)
-                .stream(false)
-                .temperature(0.5)
-                .n(1)
-                .maxTokens(2048)
-                .model("gpt-3.5-turbo")
-                .logitBias(new HashMap<>())
-                .build();
-
-        GptCallback gptCallback = new GptCallback() {
-            @Override
-            void onReceived(ChatMessage message) {
-                chat.user_tag += message.getContent().replace("\"", "");
-            }
-
-            @Override
-            void onComplete() {
-
-            }
-
-            @Override
-            void onFail() {
-
-            }
-
-        };
-
-
-        service.streamChatCompletion(request).subscribeOn(Schedulers.io()).subscribe(chunk -> {
-            ChatCompletionChoice choice = chunk.getChoices().get(0);
-            if (choice.getFinishReason() != null) {
-                gptCallback.onComplete();
-                return;
-            }
-            ChatMessage mes = choice.getMessage();
-            if (mes.getContent() != null) {
-                gptCallback.onReceived(mes);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                gptCallback.onFail();
-            }
-        });
-    }
-
-    public static byte[] StringToByte(String encodedString) {
-        try {
-            return Base64.decode(encodedString, Base64.DEFAULT);
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
-
-    public class BasicAuthInterceptor implements Interceptor {
-
-        private String credentials;
-
-        public BasicAuthInterceptor(String user, String password) {
-            this.credentials = Credentials.basic(user, password);
-        }
-
-        @Override
-        public okhttp3.Response intercept(Chain chain) throws IOException {
-            okhttp3.Request request = chain.request();
-            okhttp3.Request authenticatedRequest = request.newBuilder()
-                    .header("Authorization", credentials).build();
-            return chain.proceed(authenticatedRequest);
-        }
-
-    }
 
     public void promptToImage(Chat chat){
-
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(100, TimeUnit.SECONDS)
-                .callTimeout(100, TimeUnit.SECONDS)
-                .readTimeout(100, TimeUnit.SECONDS)
-                .writeTimeout(100, TimeUnit.SECONDS)
-                .addInterceptor(new BasicAuthInterceptor("kim1914", "q23kkr"))
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .callTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
 
+
+        Gson gson = new GsonBuilder().setLenient().create();
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
                 .baseUrl(SD_API_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
         //JSON 요청 본문 참조 바람. (https://cloud.google.com/vision/docs/ocr?hl=ko#detect_text_in_a_local_image)
-
-        Request request = new Request();
-        request.setPrompt(chat.prompt, user.sex);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String taskId = db.collection("task").document().getId();
+        Request request = new Request(user.uid, taskId, chat.text, "", user.sex, chat.clothes);
 
         RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
 
-        Call<Response> call = retrofitService.getPosts(request);
-        call.enqueue(new Callback<Response>() {
+        Call<String> call = retrofitService.getPosts(request);
+
+        chat.setProgress(taskId);
+        chat.holder.showLoad("이미지 생성 중...");
+        chat.state = Chat.STATE_LOAD_IMAGE;
+
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                chat.state = Chat.STATE_COMPLETE_IMAGE;
-                if (response.isSuccessful() && response.body() != null){
-                    String base = response.body().images.get(0).split(",", 1)[0];
-                    byte[] bytes = StringToByte(base);
-                    Cody cody = new Cody(user.nickname, user.profile, user.uid, chat.user_tag, chat.prompt);
-                    cody.generate(ChatActivity.this, bytes);
-                    cody.clothes = chat.clothes;
-                    cody.tags = chat.user_tag;
-                    chat.cody = cody;
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (chat.holder != null) {
-                                chat.holder.cdiv.setVisibility(View.VISIBLE);
-                                chat.holder.imageView.setVisibility(View.VISIBLE);
-                                chat.holder.tv_feed.setVisibility(View.VISIBLE);
-
-                                chat.holder.imageView.setTag(chat);
-
-                                chat.holder.imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Chat c = (Chat) v.getTag();
-                                        if (c.cody == null) return;
-                                        Intent intent = new Intent(ChatActivity.this, GalleryActivity.class);
-                                        intent.putExtra("uri", c.cody.imageURI);
-                                        intent.putExtra("tags", c.cody.tags);
-                                        startActivity(intent);
-                                    }
-                                });
-                                Glide.with(ChatActivity.this).load(chat.cody.imageURI).addListener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        return false;
-                                    }
-                                }).into(chat.holder.imageView);
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                    Log.d("error2", response.toString());
+                    if (response.code() != 200 || !response.isSuccessful()) {
+                        Toast.makeText(ChatActivity.this, "이미지 생성에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        chat.state = Chat.STATE_COMPLETE_TEXT;
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (chat.holder != null) {
+                                    chat.holder.tv_feed.setVisibility(View.VISIBLE);
+                                    chat.holder.hideLoad();
+                                }
                             }
-                        }
-                    });
-                }else{
-                    Toast.makeText(ChatActivity.this, "이미지 생성에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    chat.state = Chat.STATE_COMPLETE_TEXT;
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (chat.holder != null) {
-                                chat.holder.tv_feed.setVisibility(View.VISIBLE);
-                                chat.holder.hideLoad();
-                            }
-                        }
-                    });
-
-                }
+                        });
+                    }
 
                 handler.post(new Runnable() {
                     @Override
@@ -857,7 +629,8 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("error", t.toString());
                 Toast.makeText(ChatActivity.this, "이미지 생성에 실패했습니다.", Toast.LENGTH_SHORT).show();
                 chat.state = Chat.STATE_COMPLETE_TEXT;
                 handler.post(new Runnable() {
@@ -874,7 +647,16 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-
+    public static Bitmap StringToBitmap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
 
     class Chat{
 
@@ -901,6 +683,44 @@ public class ChatActivity extends AppCompatActivity {
         Chat(String text, boolean isGPT){
             this.text = text;
             this.isGPT = isGPT;
+        }
+
+        public void setProgress(String taskId){
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("task").document(taskId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    if (error == null && value != null && value.exists()){
+                        Map<String, Object> map = value.getData();
+                        Long progress = (Long) map.get("progress");
+                        Long state = (Long) map.get("state");
+                        String image = (String) map.get("image");
+                        if (image != null) {
+                            holder.setProgress(progress.intValue(), StringToBitmap(image));
+                        }
+
+                        if (state.intValue() == 2 && map.containsKey("codyId")){
+                            String id = (String) map.get("codyId");
+                            if (id != null) {
+
+                                db.collection("task").document(taskId).delete();
+
+                                db.collection("cody").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        Cody cody = documentSnapshot.toObject(Cody.class);
+                                        if (cody == null) return;
+                                        Chat.this.cody = cody;
+                                        holder.setImage(Chat.this, cody);
+                                        Chat.this.state = Chat.STATE_COMPLETE_IMAGE;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            });
         }
 
     }
@@ -950,6 +770,7 @@ public class ChatActivity extends AppCompatActivity {
                   holder.cdiv.setVisibility(View.GONE);
                   holder.change.setVisibility(View.GONE);
                   holder.tv_feed.setVisibility(View.GONE);
+                  holder.sd_load.setVisibility(View.GONE);
 
                   holder.renew.setTag(chat);
                   holder.tv_feed.setTag(chat);
@@ -1010,7 +831,7 @@ public class ChatActivity extends AppCompatActivity {
                               public void onClick(View v) {
                                   v.setVisibility(View.GONE);
                                   Chat c = (Chat) v.getTag();
-                                  outFitToPrompt(c);
+                                  promptToImage(c);
                               }
                           });
 
@@ -1092,6 +913,10 @@ public class ChatActivity extends AppCompatActivity {
             MaterialCardView change;
             CardView cdiv;
 
+            LinearLayout sd_load;
+            RangeSeekBar sd_bar;
+            TextView tv_sd_load;
+
             ViewHolder(View itemView) {
                 super(itemView);
                 op_parent = itemView.findViewById(R.id.opponent_view);
@@ -1106,6 +931,56 @@ public class ChatActivity extends AppCompatActivity {
                 load = itemView.findViewById(R.id.load);
                 renew = itemView.findViewById(R.id.fav);
                 tv_feed = itemView.findViewById(R.id.remake);
+                sd_load = itemView.findViewById(R.id.sd_load);
+                sd_bar = itemView.findViewById(R.id.seekbar);
+                tv_sd_load = itemView.findViewById(R.id.tv_sd_load);
+            }
+
+            public void setProgress(int progress, Bitmap bitmap){
+                cdiv.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.VISIBLE);
+
+                load.setVisibility(View.GONE);
+                loadView.setVisibility(View.GONE);
+                tv_load.setVisibility(View.GONE);
+                loadView.cancelAnimation();
+                sd_load.setVisibility(View.VISIBLE);
+                sd_bar.setRange(0, 100);
+                sd_bar.setProgress(progress);
+                imageView.setImageBitmap(bitmap);
+                tv_sd_load.setText(String.format("%d%%", progress));
+            }
+
+            public void setImage(Chat chat, Cody cody){
+                hideLoad();
+                cdiv.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.VISIBLE);
+                tv_feed.setVisibility(View.VISIBLE);
+                imageView.setTag(chat);
+
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Chat c = (Chat) v.getTag();
+                        if (c.cody == null) return;
+                        Intent intent = new Intent(ChatActivity.this, GalleryActivity.class);
+                        intent.putExtra("uri", cody.imageURI);
+                        intent.putExtra("tags", cody.tags);
+                        startActivity(intent);
+                    }
+                });
+                Glide.with(ChatActivity.this).load(cody.imageURI).addListener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        return false;
+                    }
+                }).into(chat.holder.imageView);
+
             }
 
 
@@ -1123,6 +998,7 @@ public class ChatActivity extends AppCompatActivity {
                 load.setVisibility(View.GONE);
                 loadView.setVisibility(View.GONE);
                 tv_load.setVisibility(View.GONE);
+                sd_load.setVisibility(View.GONE);
                 loadView.cancelAnimation();
             }
         }

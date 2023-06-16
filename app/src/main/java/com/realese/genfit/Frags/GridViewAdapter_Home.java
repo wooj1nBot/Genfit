@@ -85,8 +85,6 @@ public class GridViewAdapter_Home extends RecyclerView.Adapter<GridViewAdapter_H
             holder.profile_img.setImageResource(R.drawable.basic_img);
         }
 
-        Log.d("likes", item.tags);
-
         if (likes.contains(item.docId)) {
             holder.heartImageView.setImageResource(R.drawable.favorite_filled);
             holder.heartImageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
@@ -100,7 +98,7 @@ public class GridViewAdapter_Home extends RecyclerView.Adapter<GridViewAdapter_H
         holder.heartImageView.setTag(new Object[]{item, holder.likes});
 
 
-        if (item.tags.equals("")){
+        if (item.tags == null || item.tags.equals("")){
             holder.textView_tagging.setText("");
         }else{
             String tag = item.tags.replace("\n", "");
@@ -225,8 +223,7 @@ public class GridViewAdapter_Home extends RecyclerView.Adapter<GridViewAdapter_H
                 if (task.isSuccessful() && task.getResult().exists()){
                     Cody c = task.getResult().toObject(Cody.class);
                     Glide.with(context).load(Uri.parse(c.imageURI)).into(imageView);
-                    Log.d("gpttag", c.tags);
-                    if (!c.tags.equals("")) {
+                    if (c.tags != null && !c.tags.equals("")) {
                         String tag = c.tags.replace("\n", "");
                         tv_tag.setText(tag);
                         Spannable spannable = (Spannable) tv_tag.getText();

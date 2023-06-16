@@ -8,7 +8,7 @@ import java.util.List;
 public class Response {
 
     @Expose
-    @SerializedName("images")
-    public List<String> images;
+    @SerializedName("id")
+    public String id;
 
 }

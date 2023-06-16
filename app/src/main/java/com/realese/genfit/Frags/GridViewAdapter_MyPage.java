@@ -121,7 +121,7 @@ public class GridViewAdapter_MyPage extends RecyclerView.Adapter<GridViewAdapter
                     Cody c = task.getResult().toObject(Cody.class);
                     Glide.with(context).load(Uri.parse(c.imageURI)).into(imageView);
 
-                    if (!c.tags.equals("")) {
+                    if (c.tags != null && !c.tags.equals("")) {
                         String tag = c.tags.replace("\n", "");
                         tv_tag.setText(tag);
                         Spannable spannable = (Spannable) tv_tag.getText();

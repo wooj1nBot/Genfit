@@ -38,7 +38,7 @@ public class Cody  {
 
     public String imageURI;
     public String tags; // 입력 태그 -> 눈에 보이는 태그
-    public String gen_tags; //디퓨전에 돌릴때 넣은 태그
+    public String prompt; //디퓨전에 돌릴때 넣은 태그
     public Timestamp gen_time;
     public Map<String, String> clothes;
 
@@ -53,12 +53,12 @@ public class Cody  {
 
     public Cody(){}
 
-    public Cody(String nick_name, String profile, String uid, String tags, String gen_tags) {
+    public Cody(String nick_name, String profile, String uid, String tags, String prompt) {
         this.nick_name = nick_name;
         this.profile = profile;
         this.uid = uid;
         this.tags = tags;
-        this.gen_tags = gen_tags;
+        this.prompt = prompt;
     }
     // ------ << start Getter & Setter >> ---------- //
 
@@ -78,8 +78,8 @@ public class Cody  {
         return views;
     }
 
-    public String getGen_tags() {
-        return gen_tags;
+    public String getPrompt() {
+        return prompt;
     }
 
     public String getTags() {
@@ -110,8 +110,8 @@ public class Cody  {
         return isUpload;
     }
 
-    public void setGen_tags(String gen_tags) {
-        this.gen_tags = gen_tags;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public void setGen_time(Timestamp gen_time) {
@@ -163,9 +163,6 @@ public class Cody  {
                     }
                 });
             }
-        }
-        else{
-
         }
 
     }
