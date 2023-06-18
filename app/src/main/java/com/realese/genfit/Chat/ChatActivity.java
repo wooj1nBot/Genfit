@@ -248,33 +248,18 @@ public class ChatActivity extends AppCompatActivity {
 
     public String txtToPrompt(List<String> tags, String text, boolean isFirst){
         String tagStr = tagToString(tags);
-        if (isFirst)
-            return "지금부터 당신은 사용자의 요구를 최대한 맞춰 가장 좋은 옷 한 세트만 추천해주는 전문 패션 코디네이터입니다.\n" +
-                "키워드인 \"" + tagStr +"\"와 \"" + text +"\" 라는 텍스트를 보고 코디를 하여 상의, 하의, 신발, 액세서리로 구분해서 1개씩 색깔과 이름이 포함된 제품의 이름으로 추천해주세요." +
-                "그리고 마지막에는 그 옷을 왜 골랐는지 고객이 기분 나쁘지 않게 무조건 존댓말로 이유를 간결하게 설명해주세요." +
+        return "지금부터 당신은 사용자의 요구를 최대한 맞춰주면서 가장 좋은 옷 한 세트만 추천해주는 전문 패션 코디네이터입니다.\n" +
+                "키워드인 \"" + tagStr +"\"와 \"" + text +"\" 라는 텍스트를 보고 코디를 하되 아우터, 상의, 하의, 신발, 액세서리 순서로 색깔과 이름이 포함된 옷으로 추천해주세요. 단, 상품명은 빼주세요." +
+                "아우터를 적되, 필요 없는 상황에는 \"필요 없음\"이라고 적고, 마지막에는 그 옷을 왜 골랐는지 고객이 기분 나쁘지 않게 무조건 존댓말로 이유를 간결하게 설명해주세요." +
                 "\n" +
                 "무조건\n" +
+                "아우터: 색깔 이름\n" +
+                "상의: 색깔 이름\n" +
+                "하의: 색깔 이름\n" +
+                "신발: 색깔 이름\n" +
+                "액세서리: 색깔 이름\n" +
                 "\n" +
-                "상의: 색깔 상의 이름\n" +
-                "하의: 색깔 하의 이름\n" +
-                "신발: 색깔 신발 이름\n" +
-                "액세서리: 색깔 액세서리 이름\n" +
-                "\n" +
-                "의 형식으로 따옴표 없이 추천해주세요. 만약 옷을 고르지 못했다면 \"없음\"이라고 해주세요";
-
-        else
-            return "지금부터 당신은 사용자의 요구를 최대한 맞춰 가장 좋은 옷 한 세트만 추천해주는 전문 패션 코디네이터입니다.\n" +
-                 "키워드인 \"" + tagStr +"\"를 이용해서" + "상의, 하의, 신발, 액세서리로 구분해서 1개씩 디테일하게 색깔과 이름이 포함된 키워드 형태로 추천해주세요." +
-                "그리고 마지막에는 그 옷을 왜 골랐는지 고객이 기분 나쁘지 않게 무조건 존댓말로 이유를 간결하게 설명해주세요." +
-                    "\n" +
-                    "무조건\n" +
-                    "\n" +
-                    "상의: 색깔 상의 이름\n" +
-                    "하의: 색깔 하의 이름\n" +
-                    "신발: 색깔 신발 이름\n" +
-                    "액세서리: 색깔 액세서리 이름\n" +
-                    "\n" +
-                    "의 형식으로 따옴표 없이 추천해주세요";
+                "의 형식으로 따옴표 없이 추천해주세요.";
 
     }
 
@@ -372,16 +357,17 @@ public class ChatActivity extends AppCompatActivity {
 
         messages.add(chatMessage);
 
+
+
         ChatCompletionRequest request = ChatCompletionRequest.builder()
                 .messages(messages)
                 .stream(true)
-                .temperature(0.8)
-                .topP(1.0)
+                .temperature(1.0)
                 .presencePenalty(0.5)
                 .n(1)
                 .maxTokens(2048)
                 .model("gpt-3.5-turbo")
-                .logitBias(new HashMap<>())
+
                 .build();
 
 
@@ -611,21 +597,13 @@ public class ChatActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if (chat.holder != null) {
-                                    chat.holder.tv_feed.setVisibility(View.VISIBLE);
+                                    chat.holder.tv_feed.setVisibility(View.GONE);
+                                    chat.holder.change.setVisibility(View.VISIBLE);
                                     chat.holder.hideLoad();
                                 }
                             }
                         });
                     }
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (chat.holder != null) {
-                            chat.holder.hideLoad();
-                        }
-                    }
-                });
             }
 
             @Override
@@ -637,7 +615,8 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (chat.holder != null) {
-                            chat.holder.tv_feed.setVisibility(View.VISIBLE);
+                            chat.holder.tv_feed.setVisibility(View.GONE);
+                            chat.holder.change.setVisibility(View.VISIBLE);
                             chat.holder.hideLoad();
                         }
                     }
